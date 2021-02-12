@@ -1,23 +1,32 @@
-import { uuid } from 'uuidv4';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import Person from './Person';
 
+@Entity('farm')
 class Farm {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   name: string;
 
+  @Column()
   city: string;
 
+  @Column()
   state: string;
 
-  owner: string;
+  @Column()
+  owner_id: string;
 
-  constructor({ name, city, state, owner }: Omit<Farm, 'id'>) {
-    this.id = uuid();
-    this.name = name;
-    this.city = city;
-    this.state = state;
-    this.owner = owner;
-  }
+  @ManyToOne(() => Person)
+  @JoinColumn({ name: 'owner_id' })
+  owner: Person;
 }
 
 export default Farm;

@@ -1,17 +1,31 @@
-import { uuid } from 'uuidv4';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import Person from './Person';
+import Load from './Load';
 
+@Entity('service')
 class Service {
+  @PrimaryGeneratedColumn()
   id: string;
 
-  employee: string;
+  @Column()
+  employee_id: string;
 
-  load: string;
+  @OneToMany(() => Person, () => Service)
+  @JoinColumn({ name: 'employee_id' })
+  employee: Person;
 
-  constructor({ employee, load }: Omit<Service, 'id'>) {
-    this.id = uuid();
-    this.employee = employee;
-    this.load = load;
-  }
+  @Column()
+  load_id: string;
+
+  @OneToMany(() => Load, () => Service)
+  @JoinColumn({ name: 'load_id' })
+  load: Load;
 }
 
 export default Service;

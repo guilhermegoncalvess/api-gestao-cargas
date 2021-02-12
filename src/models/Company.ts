@@ -1,23 +1,32 @@
-import { uuid } from 'uuidv4';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import Person from './Person';
 
+@Entity('company')
 class Company {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   name: string;
 
+  @Column()
   address: string;
 
+  @Column()
   contact: string;
 
-  owner: string;
+  @Column()
+  owner_id: string;
 
-  constructor({ name, address, contact, owner }: Omit<Company, 'id'>) {
-    this.id = uuid();
-    this.name = name;
-    this.address = address;
-    this.contact = contact;
-    this.owner = owner;
-  }
+  @OneToOne(() => Person)
+  @JoinColumn({ name: 'owner_id' })
+  owner: Person;
 }
 
 export default Company;
