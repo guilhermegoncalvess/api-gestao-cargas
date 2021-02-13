@@ -1,45 +1,53 @@
+import {
+  EntityRepository,
+  getCustomRepository,
+  getRepository,
+  Repository,
+} from 'typeorm';
 import Load from '../models/Load';
 
 interface CreateLoadDTO {
   date: string;
-  company: string;
-  farm: string;
-  weight: number;
-  value: number;
+  company_id: string;
+  farm_id: string;
+  weight?: number;
+  value?: number;
   type: 'truck' | 'bitruck' | 'carretinha';
 }
 
-class LoadsRepository {
-  private loads: Load[];
-
-  constructor() {
-    this.loads = [];
-  }
-
-  public all(): Load[] {
-    return this.loads;
-  }
-
-  public create({
+@EntityRepository(Load)
+class LoadsRepository extends Repository<Load> {
+  public async createLoad({
     date,
-    company,
-    farm,
+    company_id,
+    farm_id,
     weight,
     value,
     type,
-  }: CreateLoadDTO): Load {
-    const load = new Load({
+  }: CreateLoadDTO): Promise<Load> {
+    const loadsRepository = getCustomRepository(LoadsRepository);
+    const load = loadsRepository.create({
       date,
-      company,
-      farm,
+      company_id,
+      farm_id,
       weight,
       value,
       type,
     });
 
-    this.loads.push(load);
+    await loadsRepository.save(load);
 
     return load;
+  }
+
+  public async all(): Promise<Load[]> {
+    const loadsRepository = getRepository(Load);
+
+    const loads = await loadsRepository.find({
+      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'value'],
+    });
+
+    return loads;
   }
 }
 

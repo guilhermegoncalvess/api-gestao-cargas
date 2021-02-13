@@ -1,34 +1,48 @@
+import {
+  getCustomRepository,
+  Repository,
+  EntityRepository,
+  getRepository,
+} from 'typeorm';
 import Company from '../models/Company';
 
 interface CreateCompanyDTO {
   name: string;
   address: string;
   contact: string;
-  owner: string;
+  owner_id: string;
 }
 
-class CompaniesRepository {
-  private companies: Company[];
-
-  constructor() {
-    this.companies = [];
-  }
-
-  public all(): Company[] {
-    return this.companies;
-  }
-
-  public create({ name, address, contact, owner }: CreateCompanyDTO): Company {
-    const company = new Company({
+@EntityRepository(Company)
+class CompaniesRepository extends Repository<Company> {
+  public async createCompany({
+    name,
+    address,
+    contact,
+    owner_id,
+  }: CreateCompanyDTO): Promise<Company> {
+    const companiesRepository = getCustomRepository(CompaniesRepository);
+    const company = companiesRepository.create({
       name,
       address,
       contact,
-      owner,
+      owner_id,
     });
 
-    this.companies.push(company);
+    await companiesRepository.save(company);
 
     return company;
+  }
+
+  public async all(): Promise<Company[]> {
+    const companiesRepository = getRepository(Company);
+
+    const companies = await companiesRepository.find({
+      select: ['id', 'name', 'address', 'contact'],
+      relations: ['owner'],
+    });
+
+    return companies;
   }
 }
 

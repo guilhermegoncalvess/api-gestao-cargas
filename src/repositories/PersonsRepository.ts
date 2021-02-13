@@ -1,3 +1,4 @@
+import { EntityRepository, getRepository, Repository } from 'typeorm';
 import Person from '../models/Person';
 
 interface CreateRepositoryDTO {
@@ -8,25 +9,17 @@ interface CreateRepositoryDTO {
   role: 'Motorista' | 'Embalador' | 'Propietario';
 }
 
-class PersonsRepository {
-  private persons: Person[];
-
-  constructor() {
-    this.persons = [];
-  }
-
-  public all(): Person[] {
-    return this.persons;
-  }
-
-  public create({
+@EntityRepository(Person)
+class PersonsRepository extends Repository<Person> {
+  public async createPerson({
     name,
     nickname,
     address,
     contact,
     role,
-  }: CreateRepositoryDTO): Person {
-    const person = new Person({
+  }: CreateRepositoryDTO): Promise<Person> {
+    const personsRepository = getRepository(Person);
+    const person = personsRepository.create({
       name,
       nickname,
       address,
@@ -34,9 +27,19 @@ class PersonsRepository {
       role,
     });
 
-    this.persons.push(person);
+    await personsRepository.save(person);
 
     return person;
+  }
+
+  public async all(): Promise<Person[]> {
+    const personsRepository = getRepository(Person);
+
+    const persons = await personsRepository.find({
+      select: ['id', 'address', 'contact', 'name', 'nickname', 'role'],
+    });
+
+    return persons;
   }
 }
 
