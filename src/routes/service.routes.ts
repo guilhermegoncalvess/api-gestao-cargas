@@ -5,21 +5,21 @@ import ServicesRepository from '../repositories/ServicesRepository';
 const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
-serviceRouter.post('/', (request, response) => {
-  const { employee, load } = request.body;
+serviceRouter.post('/', async (request, response) => {
+  const { employee_id, load_id } = request.body;
 
-  const service = servicesRepository.create({
-    employee,
-    load,
+  const service = await servicesRepository.createService({
+    employee_id,
+    load_id,
   });
 
   return response.json(service);
 });
 
-serviceRouter.get('/', (request, response) => {
-  const employ = servicesRepository;
+serviceRouter.get('/', async (request, response) => {
+  const service = await servicesRepository.all();
 
-  return response.json(employ);
+  return response.json(service);
 });
 
 export default serviceRouter;

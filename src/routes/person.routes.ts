@@ -1,14 +1,14 @@
 import { Router } from 'express';
 
-import EmployeesRepository from '../repositories/PersonsRepository';
+import PersonsRepository from '../repositories/PersonsRepository';
 
-const employeeRouter = Router();
-const employeesRepository = new EmployeesRepository();
+const personRouter = Router();
+const personsRepository = new PersonsRepository();
 
-employeeRouter.post('/', (request, response) => {
+personRouter.post('/', async (request, response) => {
   const { name, nickname, address, contact, role } = request.body;
 
-  const employee = employeesRepository.create({
+  const person = await personsRepository.createPerson({
     name,
     nickname,
     address,
@@ -16,13 +16,13 @@ employeeRouter.post('/', (request, response) => {
     role,
   });
 
-  return response.json(employee);
+  return response.json(person);
 });
 
-employeeRouter.get('/', (request, response) => {
-  const employ = employeesRepository;
+personRouter.get('/', async (request, response) => {
+  const persons = await personsRepository.all();
 
-  return response.json(employ);
+  return response.json(persons);
 });
 
-export default employeeRouter;
+export default personRouter;

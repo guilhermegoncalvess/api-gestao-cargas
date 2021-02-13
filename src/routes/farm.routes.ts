@@ -5,21 +5,21 @@ import FarmsRepository from '../repositories/FarmsRepository';
 const farmRouter = Router();
 const farmsRepository = new FarmsRepository();
 
-farmRouter.post('/', (request, response) => {
-  const { name, city, state, owner } = request.body;
+farmRouter.post('/', async (request, response) => {
+  const { name, city, state, owner_id } = request.body;
 
-  const farm = farmsRepository.create({
+  const farm = await farmsRepository.createFarm({
     name,
     city,
     state,
-    owner,
+    owner_id,
   });
 
   return response.json(farm);
 });
 
-farmRouter.get('/', (request, response) => {
-  const farms = farmsRepository.all();
+farmRouter.get('/', async (request, response) => {
+  const farms = await farmsRepository.all();
 
   return response.json(farms);
 });
