@@ -8,14 +8,18 @@ const companiesRepository = new CompaniesRepository();
 companyRouter.post('/', async (request, response) => {
   const { name, address, contact, owner_id } = request.body;
 
-  const company = await companiesRepository.createCompany({
-    name,
-    address,
-    contact,
-    owner_id,
-  });
+  try {
+    const company = await companiesRepository.createCompany({
+      name,
+      address,
+      contact,
+      owner_id,
+    });
 
-  return response.json(company);
+    return response.json(company);
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
 });
 
 companyRouter.get('/', async (request, response) => {

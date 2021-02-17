@@ -6,10 +6,10 @@ const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
 serviceRouter.post('/', async (request, response) => {
-  const { employee_id, load_id } = request.body;
+  const { employees_id, load_id } = request.body;
 
   const service = await servicesRepository.createService({
-    employee_id,
+    employees_id,
     load_id,
   });
 
