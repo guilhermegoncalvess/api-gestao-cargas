@@ -2,8 +2,8 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import Person from './Person';
 
@@ -24,7 +24,7 @@ class Farm {
   @Column()
   owner_id: string;
 
-  @ManyToOne(() => Person)
+  @OneToOne(() => Person)
   @JoinColumn({ name: 'owner_id' })
   owner: Person;
 }

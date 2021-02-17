@@ -1,26 +1,17 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, OneToMany, JoinColumn, PrimaryColumn } from 'typeorm';
 import Person from './Person';
 import Load from './Load';
 
 @Entity('service')
 class Service {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column()
+  @PrimaryColumn()
   employee_id: string;
 
   @OneToMany(() => Person, () => Service)
   @JoinColumn({ name: 'employee_id' })
   employee: Person;
 
-  @Column()
+  @PrimaryColumn()
   load_id: string;
 
   @OneToMany(() => Load, () => Service)
