@@ -4,7 +4,9 @@ import {
   EntityRepository,
   getRepository,
 } from 'typeorm';
+
 import Company from '../models/Company';
+import PersonsRepository from './PersonsRepository';
 
 interface CreateCompanyDTO {
   name: string;
@@ -22,6 +24,16 @@ class CompaniesRepository extends Repository<Company> {
     owner_id,
   }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getCustomRepository(CompaniesRepository);
+    const personRepository = getCustomRepository(PersonsRepository);
+
+    const checkOwnerExists = await personRepository.findOne({
+      where: { id: owner_id },
+    });
+
+    if (!checkOwnerExists) {
+      throw new Error('This owner is not registered.');
+    }
+
     const company = companiesRepository.create({
       name,
       address,

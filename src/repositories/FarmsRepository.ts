@@ -4,7 +4,9 @@ import {
   getRepository,
   Repository,
 } from 'typeorm';
+
 import Farm from '../models/Farm';
+import PersonRepository from './PersonsRepository';
 
 interface CreateFarmDTO {
   name: string;
@@ -22,6 +24,16 @@ class FarmsRepository extends Repository<Farm> {
     owner_id,
   }: CreateFarmDTO): Promise<Farm> {
     const farmsRepository = getCustomRepository(FarmsRepository);
+    const personRepository = getCustomRepository(PersonRepository);
+
+    const checkOwnerExists = await personRepository.findOne({
+      where: { id: owner_id },
+    });
+
+    if (!checkOwnerExists) {
+      throw new Error('This owner is not registered.');
+    }
+
     const farm = farmsRepository.create({
       name,
       city,
