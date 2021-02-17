@@ -4,7 +4,10 @@ import {
   getRepository,
   Repository,
 } from 'typeorm';
+
 import Load from '../models/Load';
+import CompaniesRepository from './CompaniesRepository';
+import FarmsRepository from './FarmsRepository';
 
 interface CreateLoadDTO {
   date: string;
@@ -26,6 +29,21 @@ class LoadsRepository extends Repository<Load> {
     type,
   }: CreateLoadDTO): Promise<Load> {
     const loadsRepository = getCustomRepository(LoadsRepository);
+    const farmsRepository = getCustomRepository(FarmsRepository);
+    const companiesRepository = getCustomRepository(CompaniesRepository);
+
+    const checkFarmExists = await farmsRepository.findOne({
+      where: { id: farm_id },
+    });
+
+    const checkCompanyExists = await companiesRepository.findOne({
+      where: { id: farm_id },
+    });
+
+    if (!checkFarmExists && !checkCompanyExists) {
+      throw new Error('This owner is not registered.');
+    }
+
     const load = loadsRepository.create({
       date,
       company_id,
