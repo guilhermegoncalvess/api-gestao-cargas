@@ -6,7 +6,7 @@ const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
 serviceRouter.get('/', async (request, response) => {
-  const service = await servicesRepository.all();
+  const service = await servicesRepository.findAll();
 
   return response.json(service);
 });
@@ -15,7 +15,7 @@ serviceRouter.get('/:load', async (request, response) => {
   const { load } = request.params;
   console.log(load);
   try {
-    const service = await servicesRepository.getEmployeeByLoad(load);
+    const service = await servicesRepository.findEmployeeByLoad(load);
 
     return response.json(service);
   } catch (err) {

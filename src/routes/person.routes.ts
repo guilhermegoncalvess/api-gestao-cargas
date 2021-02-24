@@ -6,7 +6,7 @@ const personRouter = Router();
 const personsRepository = new PersonsRepository();
 
 personRouter.get('/', async (request, response) => {
-  const persons = await personsRepository.getAll();
+  const persons = await personsRepository.findAll();
 
   return response.json(persons);
 });
@@ -14,7 +14,7 @@ personRouter.get('/', async (request, response) => {
 personRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
   try {
-    const person = await personsRepository.getById(id);
+    const person = await personsRepository.findById(id);
 
     return response.json(person);
   } catch (err) {
@@ -27,7 +27,7 @@ personRouter.get('/:id', async (request, response) => {
 personRouter.get('/:role', async (request, response) => {
   const { role } = request.params;
   try {
-    const person = await personsRepository.getByRole(role);
+    const person = await personsRepository.findByRole(role);
 
     return response.json(person);
   } catch (err) {
@@ -49,11 +49,35 @@ personRouter.post('/', async (request, response) => {
   return response.json(person);
 });
 
+personRouter.put('/:id', async (request, response) => {
+  const { id } = request.params;
+  const { name, nickname, address, contact, role } = request.body;
+  try {
+    const person = await personsRepository.alter({
+      id,
+      name,
+      nickname,
+      address,
+      contact,
+      role,
+    });
+
+    return response.json(person);
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
+});
+
 personRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
 
-  const rolePerson = await personsRepository.deletePerson(id);
-  return response.json({ status: `${rolePerson} exluído com sucesso!` });
+  try {
+    const rolePerson = await personsRepository.deletePerson(id);
+
+    return response.json({ status: `${rolePerson} exluído com sucesso!` });
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
 });
 
 export default personRouter;

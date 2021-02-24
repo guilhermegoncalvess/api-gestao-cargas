@@ -5,11 +5,24 @@ import CompaniesRepository from '../repositories/CompaniesRepository';
 const companyRouter = Router();
 const companiesRepository = new CompaniesRepository();
 
+companyRouter.get('/', async (request, response) => {
+  const companies = await companiesRepository.findAll();
+
+  return response.json(companies);
+});
+
+companyRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+  const companies = await companiesRepository.findById(id);
+
+  return response.json(companies[0]);
+});
+
 companyRouter.post('/', async (request, response) => {
   const { name, address, contact, owner_id } = request.body;
 
   try {
-    const company = await companiesRepository.createCompany({
+    const company = await companiesRepository.add({
       name,
       address,
       contact,
@@ -22,17 +35,23 @@ companyRouter.post('/', async (request, response) => {
   }
 });
 
-companyRouter.get('/', async (request, response) => {
-  const companies = await companiesRepository.all();
+companyRouter.put('/:id', async (request, response) => {
+  const { id } = request.params;
+  const { name, address, contact, owner_id } = request.body;
+  try {
+    const company = await companiesRepository.alter({
+      id,
+      name,
+      address,
+      contact,
+      owner_id,
+    });
 
-  return response.json(companies);
+    return response.json(company);
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
 });
-
-// companyRouter.get('/:id', async (request, response) => {
-//   const companies = await companiesRepository.all();
-
-//   return response.json(companies);
-// });
 
 companyRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
