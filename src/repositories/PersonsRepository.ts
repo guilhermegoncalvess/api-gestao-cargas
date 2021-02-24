@@ -12,7 +12,7 @@ interface CreateRepositoryDTO {
 
 @EntityRepository(Person)
 class PersonsRepository extends Repository<Person> {
-  public async createPerson({
+  public async add({
     name,
     nickname,
     address,
@@ -33,7 +33,7 @@ class PersonsRepository extends Repository<Person> {
     return person;
   }
 
-  public async all(): Promise<Person[]> {
+  public async getAll(): Promise<Person[]> {
     const personsRepository = getRepository(Person);
 
     const persons = await personsRepository.find({
@@ -41,6 +41,49 @@ class PersonsRepository extends Repository<Person> {
     });
 
     return persons;
+  }
+
+  public async getById(load: string): Promise<Person> {
+    const personsRepository = getRepository(Person);
+
+    const person = await personsRepository.findOne({
+      select: ['name', 'nickname', 'address', 'contact', 'role'],
+      where: { load },
+    });
+
+    if (!person) {
+      throw new Error('Person does not exist.');
+    }
+
+    return person;
+  }
+
+  public async getByRole(id: string | undefined): Promise<Person[]> {
+    const personsRepository = getRepository(Person);
+
+    const person = await personsRepository.find({
+      select: ['id', 'name', 'nickname', 'address', 'contact'],
+      where: { role: id },
+    });
+
+    if (!person) {
+      throw new Error('Person does not exist.');
+    }
+
+    return person;
+  }
+
+  public async deletePerson(id: string): Promise<string> {
+    const personsRepository = getRepository(Person);
+
+    const person = await personsRepository.findOne(id);
+
+    if (!person) {
+      throw new Error('Person does not exist.');
+    }
+
+    await personsRepository.remove(person);
+    return person.role;
   }
 }
 
