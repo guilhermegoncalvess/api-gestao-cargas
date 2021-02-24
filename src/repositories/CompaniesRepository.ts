@@ -9,6 +9,7 @@ import Company from '../models/Company';
 import PersonsRepository from './PersonsRepository';
 
 interface CreateCompanyDTO {
+  id?: string;
   name: string;
   address: string;
   contact: string;
@@ -17,7 +18,34 @@ interface CreateCompanyDTO {
 
 @EntityRepository(Company)
 class CompaniesRepository extends Repository<Company> {
-  public async createCompany({
+  public async findAll(): Promise<Company[]> {
+    const companiesRepository = getRepository(Company);
+
+    const companies = await companiesRepository.find({
+      select: ['id', 'name', 'address', 'contact'],
+      relations: ['owner'],
+    });
+
+    return companies;
+  }
+
+  public async findById(id: string): Promise<Company[]> {
+    const companiesRepository = getRepository(Company);
+
+    const company = await companiesRepository.find({
+      select: ['name', 'address', 'contact'],
+      relations: ['owner'],
+      where: { id },
+    });
+
+    if (!company) {
+      throw new Error('Company does not exist.');
+    }
+
+    return company;
+  }
+
+  public async add({
     name,
     address,
     contact,
@@ -46,15 +74,28 @@ class CompaniesRepository extends Repository<Company> {
     return company;
   }
 
-  public async all(): Promise<Company[]> {
+  public async alter({
+    id,
+    name,
+    address,
+    contact,
+    owner_id,
+  }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getRepository(Company);
+    const company = await companiesRepository.findOne(id);
 
-    const companies = await companiesRepository.find({
-      select: ['id', 'name', 'address', 'contact'],
-      relations: ['owner'],
-    });
+    if (!company) {
+      throw new Error('company does not exist.');
+    }
 
-    return companies;
+    if (name) company.name = name;
+    if (address) company.address = address;
+    if (contact) company.contact = contact;
+    if (owner_id) company.owner_id = owner_id;
+
+    await companiesRepository.save(company);
+
+    return company;
   }
 
   public async deleteCompany(id: string): Promise<void> {

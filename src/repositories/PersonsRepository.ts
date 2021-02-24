@@ -2,7 +2,8 @@ import { EntityRepository, getRepository, Repository } from 'typeorm';
 
 import Person from '../models/Person';
 
-interface CreateRepositoryDTO {
+interface CreatePersonDTO {
+  id?: string;
   name: string;
   nickname: string;
   address: string;
@@ -12,13 +13,53 @@ interface CreateRepositoryDTO {
 
 @EntityRepository(Person)
 class PersonsRepository extends Repository<Person> {
+  public async findAll(): Promise<Person[]> {
+    const personsRepository = getRepository(Person);
+
+    const persons = await personsRepository.find({
+      select: ['id', 'address', 'contact', 'name', 'nickname', 'role'],
+    });
+
+    return persons;
+  }
+
+  public async findById(id: string): Promise<Person> {
+    const personsRepository = getRepository(Person);
+
+    const person = await personsRepository.findOne({
+      select: ['name', 'nickname', 'address', 'contact', 'role'],
+      where: { id },
+    });
+
+    if (!person) {
+      throw new Error('Person does not exist.');
+    }
+
+    return person;
+  }
+
+  public async findByRole(id: string | undefined): Promise<Person[]> {
+    const personsRepository = getRepository(Person);
+
+    const person = await personsRepository.find({
+      select: ['id', 'name', 'nickname', 'address', 'contact'],
+      where: { role: id },
+    });
+
+    if (!person) {
+      throw new Error('Person does not exist.');
+    }
+
+    return person;
+  }
+
   public async add({
     name,
     nickname,
     address,
     contact,
     role,
-  }: CreateRepositoryDTO): Promise<Person> {
+  }: CreatePersonDTO): Promise<Person> {
     const personsRepository = getRepository(Person);
     const person = personsRepository.create({
       name,
@@ -33,42 +74,28 @@ class PersonsRepository extends Repository<Person> {
     return person;
   }
 
-  public async getAll(): Promise<Person[]> {
+  public async alter({
+    id,
+    name,
+    nickname,
+    address,
+    contact,
+    role,
+  }: CreatePersonDTO): Promise<Person> {
     const personsRepository = getRepository(Person);
-
-    const persons = await personsRepository.find({
-      select: ['id', 'address', 'contact', 'name', 'nickname', 'role'],
-    });
-
-    return persons;
-  }
-
-  public async getById(load: string): Promise<Person> {
-    const personsRepository = getRepository(Person);
-
-    const person = await personsRepository.findOne({
-      select: ['name', 'nickname', 'address', 'contact', 'role'],
-      where: { load },
-    });
+    const person = await personsRepository.findOne(id);
 
     if (!person) {
       throw new Error('Person does not exist.');
     }
 
-    return person;
-  }
+    if (name) person.name = name;
+    if (nickname) person.nickname = nickname;
+    if (address) person.address = address;
+    if (contact) person.contact = contact;
+    if (role) person.role = role;
 
-  public async getByRole(id: string | undefined): Promise<Person[]> {
-    const personsRepository = getRepository(Person);
-
-    const person = await personsRepository.find({
-      select: ['id', 'name', 'nickname', 'address', 'contact'],
-      where: { role: id },
-    });
-
-    if (!person) {
-      throw new Error('Person does not exist.');
-    }
+    await personsRepository.save(person);
 
     return person;
   }

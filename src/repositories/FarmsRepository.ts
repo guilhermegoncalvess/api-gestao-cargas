@@ -9,6 +9,7 @@ import Farm from '../models/Farm';
 import PersonRepository from './PersonsRepository';
 
 interface CreateFarmDTO {
+  id?: string;
   name: string;
   city: string;
   state: string;
@@ -17,7 +18,34 @@ interface CreateFarmDTO {
 
 @EntityRepository(Farm)
 class FarmsRepository extends Repository<Farm> {
-  public async createFarm({
+  public async findAll(): Promise<Farm[]> {
+    const farmsRepository = getRepository(Farm);
+
+    const farms = await farmsRepository.find({
+      select: ['id', 'name', 'city', 'state'],
+      relations: ['owner'],
+    });
+
+    return farms;
+  }
+
+  public async findById(id: string): Promise<Farm[]> {
+    const farmsRepository = getRepository(Farm);
+
+    const farm = await farmsRepository.find({
+      select: ['name', 'city', 'state'],
+      relations: ['owner'],
+      where: { id },
+    });
+
+    if (!farm) {
+      throw new Error('Farm does not exist.');
+    }
+
+    return farm;
+  }
+
+  public async add({
     name,
     city,
     state,
@@ -46,15 +74,40 @@ class FarmsRepository extends Repository<Farm> {
     return farm;
   }
 
-  public async all(): Promise<Farm[]> {
+  public async alter({
+    id,
+    name,
+    city,
+    state,
+    owner_id,
+  }: CreateFarmDTO): Promise<Farm> {
+    const farmsRepository = getRepository(Farm);
+    const farm = await farmsRepository.findOne(id);
+
+    if (!farm) {
+      throw new Error('farm does not exist.');
+    }
+
+    if (name) farm.name = name;
+    if (city) farm.city = city;
+    if (state) farm.state = state;
+    if (owner_id) farm.owner_id = owner_id;
+
+    await farmsRepository.save(farm);
+
+    return farm;
+  }
+
+  public async deleteFarm(id: string): Promise<void> {
     const farmsRepository = getRepository(Farm);
 
-    const farms = await farmsRepository.find({
-      select: ['id', 'owner_id', 'name', 'city', 'state'],
-      relations: ['owner'],
-    });
+    const farm = await farmsRepository.findOne(id);
 
-    return farms;
+    if (!farm) {
+      throw new Error('Farm does not exist.');
+    }
+
+    await farmsRepository.remove(farm);
   }
 }
 

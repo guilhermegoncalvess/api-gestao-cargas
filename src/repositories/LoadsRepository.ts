@@ -20,7 +20,17 @@ interface CreateLoadDTO {
 
 @EntityRepository(Load)
 class LoadsRepository extends Repository<Load> {
-  public async createLoad({
+  public async findAll(): Promise<Load[]> {
+    const loadsRepository = getRepository(Load);
+
+    const loads = await loadsRepository.find({
+      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'value'],
+    });
+
+    return loads;
+  }
+
+  public async add({
     date,
     company_id,
     farm_id,
@@ -56,16 +66,6 @@ class LoadsRepository extends Repository<Load> {
     await loadsRepository.save(load);
 
     return load;
-  }
-
-  public async all(): Promise<Load[]> {
-    const loadsRepository = getRepository(Load);
-
-    const loads = await loadsRepository.find({
-      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'value'],
-    });
-
-    return loads;
   }
 }
 
