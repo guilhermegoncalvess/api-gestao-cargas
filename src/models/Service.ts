@@ -1,4 +1,4 @@
-import { Entity, OneToMany, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import Person from './Person';
 import Load from './Load';
 
@@ -7,14 +7,14 @@ class Service {
   @PrimaryColumn()
   employee_id: string;
 
-  @OneToMany(() => Person, () => Service)
+  @ManyToOne(() => Person)
   @JoinColumn({ name: 'employee_id' })
   employee: Person;
 
   @PrimaryColumn()
   load_id: string;
 
-  @OneToMany(() => Load, () => Service)
+  @ManyToOne(() => Load)
   @JoinColumn({ name: 'load_id' })
   load: Load;
 }
