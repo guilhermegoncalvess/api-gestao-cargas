@@ -14,7 +14,7 @@ interface CreateRepositoryDTO {
 
 @EntityRepository(Service)
 class ServicesRepository extends Repository<Service> {
-  public async createService({
+  public async add({
     employees_id,
     load_id,
   }: CreateRepositoryDTO): Promise<Service[]> {
@@ -40,6 +40,22 @@ class ServicesRepository extends Repository<Service> {
     });
 
     return services;
+  }
+
+  public async getEmployeeByLoad(load: string): Promise<Service[]> {
+    const servicesRepository = getRepository(Service);
+
+    const service = await servicesRepository.find({
+      select: ['employee_id'],
+
+      where: { load_id: load },
+    });
+
+    if (!service) {
+      throw new Error('Service does not exist.');
+    }
+
+    return service;
   }
 }
 
