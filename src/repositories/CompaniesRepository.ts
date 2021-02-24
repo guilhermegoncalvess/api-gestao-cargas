@@ -56,6 +56,18 @@ class CompaniesRepository extends Repository<Company> {
 
     return companies;
   }
+
+  public async deleteCompany(id: string): Promise<void> {
+    const companiesRepository = getRepository(Company);
+
+    const company = await companiesRepository.findOne(id);
+
+    if (!company) {
+      throw new Error('Company does not exist.');
+    }
+
+    await companiesRepository.remove(company);
+  }
 }
 
 export default CompaniesRepository;
