@@ -7,10 +7,10 @@ import loadRouter from './load.routes';
 
 const routes = Router();
 
-routes.use('/person', personRouter);
-routes.use('/company', companyRouter);
-routes.use('/farm', farmRouter);
-routes.use('/service', serviceRouter);
-routes.use('/load', loadRouter);
+routes.use('/persons', personRouter);
+routes.use('/companies', companyRouter);
+routes.use('/farms', farmRouter);
+routes.use('/services', serviceRouter);
+routes.use('/loads', loadRouter);
 
 export default routes;
