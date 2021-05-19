@@ -12,10 +12,11 @@ export default class createPersons1613077006910 implements MigrationInterface {
         name: 'person',
         columns: [
           {
-            name: 'person_id',
+            name: 'id',
             type: 'varchar',
             isPrimary: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()'
           },
           {
             name: 'name',
@@ -30,22 +31,37 @@ export default class createPersons1613077006910 implements MigrationInterface {
           {
             name: 'address',
             type: 'varchar',
-            isNullable: true,
+            isNullable: false,
+          },
+          {
+            name: 'city',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'state',
+            type: 'varchar',
+            isNullable: false,
           },
           {
             name: 'contact',
             type: 'varchar',
-            isNullable: true,
+            isNullable: false,
           },
           {
             name: 'role',
             type: 'varchar',
-            isNullable: true,
+            isNullable: false,
           },
           {
-            name: 'date',
-            type: 'timestamp with time zone',
-            isNullable: true,
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
           },
         ],
       }),
