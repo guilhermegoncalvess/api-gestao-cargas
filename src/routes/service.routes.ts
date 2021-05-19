@@ -6,9 +6,16 @@ const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
 serviceRouter.get('/', async (request, response) => {
-  const service = await servicesRepository.findAll();
+  try {
+    const service = await servicesRepository.findAll();
+  
+    return response.json(service);
 
-  return response.json(service);
+  } catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhum serviço foi encontrada.' });
+  }
 });
 
 serviceRouter.get('/:load', async (request, response) => {

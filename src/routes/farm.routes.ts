@@ -6,24 +6,41 @@ const farmRouter = Router();
 const farmsRepository = new FarmsRepository();
 
 farmRouter.get('/', async (request, response) => {
-  const farms = await farmsRepository.findAll();
 
-  return response.json(farms);
+  try {
+    const farms = await farmsRepository.findAll();
+  
+    return response.json(farms);
+
+  }catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhuma fazenda foi encontrada.' });
+  }
 });
 
 farmRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
-  const farms = await farmsRepository.findById(id);
 
-  return response.json(farms[0]);
+  try {
+    const farms = await farmsRepository.findById(id);
+  
+    return response.json(farms[0]);
+
+  }catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhuma fazenda foi encontrada.' });
+  }
 });
 
 farmRouter.post('/', async (request, response) => {
-  const { name, city, state, owner_id } = request.body;
+  const { name, address, city, state, owner_id } = request.body;
 
   try {
     const farm = await farmsRepository.add({
       name,
+      address,
       city,
       state,
       owner_id,
@@ -37,12 +54,13 @@ farmRouter.post('/', async (request, response) => {
 
 farmRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { name, city, state, owner_id } = request.body;
+  const { name, address, city, state, owner_id } = request.body;
 
   try {
     const person = await farmsRepository.alter({
       id,
       name,
+      address,
       city,
       state,
       owner_id,

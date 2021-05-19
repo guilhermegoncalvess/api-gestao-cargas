@@ -12,6 +12,8 @@ interface CreateCompanyDTO {
   id?: string;
   name: string;
   address: string;
+  city?: string;
+  state?: string;
   contact: string;
   owner_id: string;
 }
@@ -48,6 +50,8 @@ class CompaniesRepository extends Repository<Company> {
   public async add({
     name,
     address,
+    city,
+    state,
     contact,
     owner_id,
   }: CreateCompanyDTO): Promise<Company> {
@@ -61,23 +65,34 @@ class CompaniesRepository extends Repository<Company> {
     if (!checkOwnerExists) {
       throw new Error('This owner is not registered.');
     }
-
-    const company = companiesRepository.create({
-      name,
-      address,
-      contact,
-      owner_id,
-    });
-
-    await companiesRepository.save(company);
-
-    return company;
+    else {
+      if( checkOwnerExists.role == 'Propietario'){
+        
+        const company = companiesRepository.create({
+          name,
+          address,
+          city,
+          state,
+          contact,
+          owner_id,
+        });
+    
+        await companiesRepository.save(company);
+    
+        return company;
+      }
+      else {
+        throw new Error('This person not is owner.');
+      }
+    }
   }
 
   public async alter({
     id,
     name,
     address,
+    city,
+    state,
     contact,
     owner_id,
   }: CreateCompanyDTO): Promise<Company> {
@@ -90,6 +105,8 @@ class CompaniesRepository extends Repository<Company> {
 
     if (name) company.name = name;
     if (address) company.address = address;
+    if (city) company.city = city;
+    if (state) company.state = state;
     if (contact) company.contact = contact;
     if (owner_id) company.owner_id = owner_id;
 

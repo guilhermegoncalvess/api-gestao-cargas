@@ -6,25 +6,41 @@ const companyRouter = Router();
 const companiesRepository = new CompaniesRepository();
 
 companyRouter.get('/', async (request, response) => {
-  const companies = await companiesRepository.findAll();
+  try {
+    const companies = await companiesRepository.findAll();
 
-  return response.json(companies);
+    return response.json(companies);
+  } catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhuma empresa foi encontrada.' });
+  }
 });
 
 companyRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
-  const companies = await companiesRepository.findById(id);
 
-  return response.json(companies[0]);
+  try {
+    const companies = await companiesRepository.findById(id);
+  
+    return response.json(companies[0]);
+
+  }catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhuma empresa foi encontrada.' });
+  }
 });
 
 companyRouter.post('/', async (request, response) => {
-  const { name, address, contact, owner_id } = request.body;
+  const { name, address, city, state, contact, owner_id } = request.body;
 
   try {
     const company = await companiesRepository.add({
       name,
       address,
+      city,
+      state,
       contact,
       owner_id,
     });
@@ -37,12 +53,14 @@ companyRouter.post('/', async (request, response) => {
 
 companyRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { name, address, contact, owner_id } = request.body;
+  const { name, address, city, state, contact, owner_id } = request.body;
   try {
     const company = await companiesRepository.alter({
       id,
       name,
       address,
+      city,
+      state,
       contact,
       owner_id,
     });

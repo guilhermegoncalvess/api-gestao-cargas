@@ -11,6 +11,7 @@ import PersonRepository from './PersonsRepository';
 interface CreateFarmDTO {
   id?: string;
   name: string;
+  address: string;
   city: string;
   state: string;
   owner_id: string;
@@ -61,17 +62,25 @@ class FarmsRepository extends Repository<Farm> {
     if (!checkOwnerExists) {
       throw new Error('This owner is not registered.');
     }
+    else {
+      if( checkOwnerExists.role == 'Propietario') {
 
-    const farm = farmsRepository.create({
-      name,
-      city,
-      state,
-      owner_id,
-    });
+        const farm = farmsRepository.create({
+          name,
+          city,
+          state,
+          owner_id,
+        });
+    
+        await farmsRepository.save(farm);
+    
+        return farm;
+      }
+      else {
+        throw new Error('This person not is owner.');
+      }
+    }
 
-    await farmsRepository.save(farm);
-
-    return farm;
   }
 
   public async alter({

@@ -14,7 +14,7 @@ interface CreateLoadDTO {
   company_id: string;
   farm_id: string;
   weight?: number;
-  value?: number;
+  cost?: number;
   type: 'truck' | 'bitruck' | 'carretinha';
 }
 
@@ -24,7 +24,7 @@ class LoadsRepository extends Repository<Load> {
     const loadsRepository = getRepository(Load);
 
     const loads = await loadsRepository.find({
-      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'value'],
+      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'cost'],
     });
 
     return loads;
@@ -35,7 +35,7 @@ class LoadsRepository extends Repository<Load> {
     company_id,
     farm_id,
     weight,
-    value,
+    cost,
     type,
   }: CreateLoadDTO): Promise<Load> {
     const loadsRepository = getCustomRepository(LoadsRepository);
@@ -59,7 +59,7 @@ class LoadsRepository extends Repository<Load> {
       company_id,
       farm_id,
       weight,
-      value,
+      cost,
       type,
     });
 

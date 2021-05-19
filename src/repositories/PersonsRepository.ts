@@ -7,6 +7,8 @@ interface CreatePersonDTO {
   name: string;
   nickname: string;
   address: string;
+  city: string;
+  state: string;
   contact: string;
   role: 'Motorista' | 'Embalador' | 'Propietario';
 }
@@ -19,6 +21,10 @@ class PersonsRepository extends Repository<Person> {
     const persons = await personsRepository.find({
       select: ['id', 'address', 'contact', 'name', 'nickname', 'role'],
     });
+
+    if (!persons) {
+      throw new Error('Persons not found.');
+    }
 
     return persons;
   }
@@ -57,14 +63,19 @@ class PersonsRepository extends Repository<Person> {
     name,
     nickname,
     address,
+    city,
+    state,
     contact,
     role,
   }: CreatePersonDTO): Promise<Person> {
     const personsRepository = getRepository(Person);
+    
     const person = personsRepository.create({
       name,
       nickname,
       address,
+      city,
+      state,
       contact,
       role,
     });

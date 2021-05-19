@@ -6,9 +6,18 @@ const personRouter = Router();
 const personsRepository = new PersonsRepository();
 
 personRouter.get('/', async (request, response) => {
-  const persons = await personsRepository.findAll();
+  try {
 
-  return response.json(persons);
+    const persons = await personsRepository.findAll();
+  
+  
+    return response.json(persons);
+  } catch (err) {
+    return response
+      .status(400)
+      .json({ message: err.message });
+  }
+  
 });
 
 personRouter.get('/:id', async (request, response) => {
@@ -36,12 +45,14 @@ personRouter.get('/:role', async (request, response) => {
 });
 
 personRouter.post('/', async (request, response) => {
-  const { name, nickname, address, contact, role } = request.body;
+  const { name, nickname, address, city, state, contact, role } = request.body;
 
   const person = await personsRepository.add({
     name,
     nickname,
     address,
+    city,
+    state,
     contact,
     role,
   });
@@ -51,13 +62,15 @@ personRouter.post('/', async (request, response) => {
 
 personRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { name, nickname, address, contact, role } = request.body;
+  const { name, nickname, address, city, state, contact, role } = request.body;
   try {
     const person = await personsRepository.alter({
       id,
       name,
       nickname,
       address,
+      city,
+      state,
       contact,
       role,
     });

@@ -6,13 +6,20 @@ const loadRouter = Router();
 const loadsRepository = new LoadsRepository();
 
 loadRouter.get('/', async (request, response) => {
-  const loads = await loadsRepository.findAll();
+  try 
+  {
+    const loads = await loadsRepository.findAll();
 
-  return response.json(loads);
+    return response.json(loads);
+  } catch (err) {
+    return response
+      .status(400)
+      .json({ message: 'Nenhuma carga foi encontrada.' });
+  }
 });
 
 loadRouter.post('/', async (request, response) => {
-  const { date, company_id, farm_id, weight, value, type } = request.body;
+  const { date, company_id, farm_id, weight, cost, type } = request.body;
 
   try {
     const load = await loadsRepository.add({
@@ -20,7 +27,7 @@ loadRouter.post('/', async (request, response) => {
       company_id,
       farm_id,
       weight,
-      value,
+      cost,
       type,
     });
 
