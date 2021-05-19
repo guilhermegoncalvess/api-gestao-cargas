@@ -17,6 +17,12 @@ class Company {
 
   @Column()
   address: string;
+  
+  @Column()
+  city: string;
+  
+  @Column()
+  state: string;
 
   @Column()
   contact: string;

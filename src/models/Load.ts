@@ -34,7 +34,7 @@ class Load {
   weight: number;
 
   @Column()
-  value: number;
+  cost: number;
 
   @Column()
   type: 'truck' | 'bitruck' | 'carretinha';

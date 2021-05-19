@@ -16,13 +16,19 @@ class Farm {
   name: string;
 
   @Column()
+  address: string;
+  
+  @Column()
   city: string;
-
+  
   @Column()
   state: string;
 
   @Column()
   owner_id: string;
+  
+  @Column()
+  contact: string;
 
   @OneToOne(() => Person)
   @JoinColumn({ name: 'owner_id' })
