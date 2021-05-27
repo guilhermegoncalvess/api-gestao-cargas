@@ -67,7 +67,7 @@ class CompaniesRepository extends Repository<Company> {
     }
     else {
       if( checkOwnerExists.role == 'Propietario'){
-        
+
         const company = companiesRepository.create({
           name,
           address,
@@ -76,9 +76,9 @@ class CompaniesRepository extends Repository<Company> {
           contact,
           owner_id,
         });
-    
+
         await companiesRepository.save(company);
-    
+
         return company;
       }
       else {
