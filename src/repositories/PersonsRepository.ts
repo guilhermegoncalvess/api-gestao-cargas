@@ -1,4 +1,5 @@
 import { EntityRepository, getRepository, Repository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Person from '../models/Person';
 
@@ -23,7 +24,7 @@ class PersonsRepository extends Repository<Person> {
     });
 
     if (!persons) {
-      throw new Error('Persons not found.');
+      throw new AppError('Persons not found.', 404);
     }
 
     return persons;
@@ -38,7 +39,7 @@ class PersonsRepository extends Repository<Person> {
     });
 
     if (!person) {
-      throw new Error('Person does not exist.');
+      throw new AppError('Person does not exist.', 404);
     }
 
     return person;
@@ -53,7 +54,7 @@ class PersonsRepository extends Repository<Person> {
     });
 
     if (!person) {
-      throw new Error('Person does not exist.');
+      throw new AppError('Person does not exist.', 404);
     }
 
     return person;
@@ -69,7 +70,7 @@ class PersonsRepository extends Repository<Person> {
     role,
   }: CreatePersonDTO): Promise<Person> {
     const personsRepository = getRepository(Person);
-    
+
     const person = personsRepository.create({
       name,
       nickname,
@@ -97,7 +98,7 @@ class PersonsRepository extends Repository<Person> {
     const person = await personsRepository.findOne(id);
 
     if (!person) {
-      throw new Error('Person does not exist.');
+      throw new AppError('Person does not exist.', 404);
     }
 
     if (name) person.name = name;
@@ -117,7 +118,7 @@ class PersonsRepository extends Repository<Person> {
     const person = await personsRepository.findOne(id);
 
     if (!person) {
-      throw new Error('Person does not exist.');
+      throw new AppError('Person does not exist.', 404);
     }
 
     await personsRepository.remove(person);

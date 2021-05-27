@@ -36,52 +36,42 @@ userRouter.get('/:id', async (request, response) => {
 
 
 userRouter.post('/', async (request, response) => {
-  try {
-    const { email, password } = request.body;
+  const { email, password } = request.body;
 
-    const createUser = new CreateUserService();
+  const createUser = new CreateUserService();
 
-    const user = await createUser.execute({
-      email,
-      password,
-    });
+  const user = await createUser.execute({
+    email,
+    password,
+  });
 
-    // @ts-expect-error
-    delete user.password;
+  // @ts-expect-error
+  delete user.password;
 
-    return response.json(user);
+  return response.status(201).json(user);
 
-  }catch(err) {
-    return response.status(400).json({ error: err.message})
-  }
 });
 
 userRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
   const { email, password } = request.body;
-  try {
-    const user = await usersRepository.alter({
-      id,
-      email,
-      password,
-    });
 
-    return response.json(user);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  const user = await usersRepository.alter({
+    id,
+    email,
+    password,
+  });
+
+  return response.json(user);
+
 });
 
 userRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
 
-  try {
-    const roleuser = await usersRepository.deleteuser(id);
+  const roleuser = await usersRepository.deleteuser(id);
 
-    return response.json({ status: `${roleuser} exluído com sucesso!` });
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json({ status: `${roleuser} exluído com sucesso!` });
 });
 
 export default userRouter;

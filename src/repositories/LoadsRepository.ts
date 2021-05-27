@@ -5,6 +5,8 @@ import {
   Repository,
 } from 'typeorm';
 
+import AppError from '../errors/AppError';
+
 import Load from '../models/Load';
 import CompaniesRepository from './CompaniesRepository';
 import FarmsRepository from './FarmsRepository';
@@ -26,6 +28,10 @@ class LoadsRepository extends Repository<Load> {
     const loads = await loadsRepository.find({
       select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'cost'],
     });
+
+    if (!loads) {
+      throw new AppError('Loads not found.', 404);
+    }
 
     return loads;
   }
@@ -51,7 +57,7 @@ class LoadsRepository extends Repository<Load> {
     });
 
     if (!checkFarmExists && !checkCompanyExists) {
-      throw new Error('This owner is not registered.');
+      throw new AppError('This owner is not registered.', 404);
     }
 
     const load = loadsRepository.create({

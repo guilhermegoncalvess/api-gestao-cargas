@@ -1,4 +1,5 @@
 import { EntityRepository, getRepository, Repository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import User from '../models/User';
 
@@ -18,7 +19,7 @@ class usersRepository extends Repository<User> {
     });
 
     if (!users) {
-      throw new Error('users not found.');
+      throw new AppError('Users not found.', 404);
     }
 
     return users;
@@ -33,7 +34,7 @@ class usersRepository extends Repository<User> {
     });
 
     if (!user) {
-      throw new Error('user does not exist.');
+      throw new AppError('user does not exist.', 404);
     }
 
     return user;
@@ -48,7 +49,7 @@ class usersRepository extends Repository<User> {
     });
 
     if (!user) {
-      throw new Error('user does not exist.');
+      throw new AppError('user does not exist.', 404);
     }
 
     return user;
@@ -79,7 +80,7 @@ class usersRepository extends Repository<User> {
     const user = await usersRepository.findOne(id);
 
     if (!user) {
-      throw new Error('user does not exist.');
+      throw new AppError('user does not exist.', 404);
     }
 
     if (email) user.email = email;
@@ -96,7 +97,7 @@ class usersRepository extends Repository<User> {
     const user = await usersRepository.findOne(id);
 
     if (!user) {
-      throw new Error('user does not exist.');
+      throw new AppError('user does not exist.', 404);
     }
 
     await usersRepository.remove(user);

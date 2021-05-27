@@ -4,6 +4,7 @@ import {
   getRepository,
   Repository,
 } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Service from '../models/Service';
 
@@ -21,6 +22,10 @@ class ServicesRepository extends Repository<Service> {
       select: ['load_id', 'employee_id'],
     });
 
+    if (!services) {
+      throw new AppError('Services not found.', 404);
+    }
+
     return services;
   }
 
@@ -34,7 +39,7 @@ class ServicesRepository extends Repository<Service> {
     });
 
     if (!service) {
-      throw new Error('Service does not exist.');
+      throw new AppError('Service does not exist.', 404);
     }
 
     return service;

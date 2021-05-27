@@ -9,28 +9,16 @@ const servicesRepository = new ServicesRepository();
 serviceRouter.use(ensureAuthenticated);
 
 serviceRouter.get('/', async (request, response) => {
-  try {
-    const service = await servicesRepository.findAll();
+  const service = await servicesRepository.findAll();
 
-    return response.json(service);
-
-  } catch (err) {
-    return response
-      .status(400)
-      .json({ message: 'Nenhum serviço foi encontrada.' });
-  }
+  return response.json(service);
 });
 
 serviceRouter.get('/:load', async (request, response) => {
   const { load } = request.params;
-  console.log(load);
-  try {
-    const service = await servicesRepository.findEmployeeByLoad(load);
+  const service = await servicesRepository.findEmployeeByLoad(load);
 
-    return response.json(service);
-  } catch (err) {
-    return response.status(400).json({ message: err.message });
-  }
+  return response.json(service);
 });
 
 serviceRouter.post('/', async (request, response) => {
@@ -41,7 +29,7 @@ serviceRouter.post('/', async (request, response) => {
     load_id,
   });
 
-  return response.json(service);
+  return response.status(201).json(service);
 });
 
 export default serviceRouter;

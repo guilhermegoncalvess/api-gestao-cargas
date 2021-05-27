@@ -4,6 +4,7 @@ import {
   EntityRepository,
   getRepository,
 } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Company from '../models/Company';
 import PersonsRepository from './PersonsRepository';
@@ -28,6 +29,10 @@ class CompaniesRepository extends Repository<Company> {
       relations: ['owner'],
     });
 
+    if (!companies) {
+      throw new AppError('Companies not found.', 404);
+    }
+
     return companies;
   }
 
@@ -41,7 +46,7 @@ class CompaniesRepository extends Repository<Company> {
     });
 
     if (!company) {
-      throw new Error('Company does not exist.');
+      throw new AppError('Company does not exist.', 404);
     }
 
     return company;
@@ -63,7 +68,7 @@ class CompaniesRepository extends Repository<Company> {
     });
 
     if (!checkOwnerExists) {
-      throw new Error('This owner is not registered.');
+      throw new AppError('This owner is not registered.', 404);
     }
     else {
       if( checkOwnerExists.role == 'Propietario'){
@@ -82,7 +87,7 @@ class CompaniesRepository extends Repository<Company> {
         return company;
       }
       else {
-        throw new Error('This person not is owner.');
+        throw new AppError('This person not is owner.', 404 );
       }
     }
   }
@@ -100,7 +105,7 @@ class CompaniesRepository extends Repository<Company> {
     const company = await companiesRepository.findOne(id);
 
     if (!company) {
-      throw new Error('company does not exist.');
+      throw new AppError('company does not exist.', 404);
     }
 
     if (name) company.name = name;
@@ -121,7 +126,7 @@ class CompaniesRepository extends Repository<Company> {
     const company = await companiesRepository.findOne(id);
 
     if (!company) {
-      throw new Error('Company does not exist.');
+      throw new AppError('Company does not exist.', 404);
     }
 
     await companiesRepository.remove(company);

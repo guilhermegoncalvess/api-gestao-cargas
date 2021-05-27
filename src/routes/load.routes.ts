@@ -9,35 +9,26 @@ const loadsRepository = new LoadsRepository();
 loadRouter.use(ensureAuthenticated);
 
 loadRouter.get('/', async (request, response) => {
-  try
-  {
-    const loads = await loadsRepository.findAll();
+  const loads = await loadsRepository.findAll();
 
-    return response.json(loads);
-  } catch (err) {
-    return response
-      .status(400)
-      .json({ message: 'Nenhuma carga foi encontrada.' });
-  }
+  return response.json(loads);
+
 });
 
 loadRouter.post('/', async (request, response) => {
-  try {
-    const { date, company_id, farm_id, weight, cost, type } = request.body;
+  const { date, company_id, farm_id, weight, cost, type } = request.body;
 
-    const load = await loadsRepository.add({
-      date,
-      company_id,
-      farm_id,
-      weight,
-      cost,
-      type,
-    });
+  const load = await loadsRepository.add({
+    date,
+    company_id,
+    farm_id,
+    weight,
+    cost,
+    type,
+  });
 
-    return response.json(load);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.status(201).json(load);
+
 });
 
 export default loadRouter;

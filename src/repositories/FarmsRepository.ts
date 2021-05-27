@@ -4,6 +4,7 @@ import {
   getRepository,
   Repository,
 } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Farm from '../models/Farm';
 import PersonRepository from './PersonsRepository';
@@ -27,6 +28,10 @@ class FarmsRepository extends Repository<Farm> {
       relations: ['owner'],
     });
 
+    if (!farms) {
+      throw new AppError('Farms not found.', 404);
+    }
+
     return farms;
   }
 
@@ -40,7 +45,7 @@ class FarmsRepository extends Repository<Farm> {
     });
 
     if (!farm) {
-      throw new Error('Farm does not exist.');
+      throw new AppError('Farm does not exist.', 404);
     }
 
     return farm;
@@ -60,7 +65,7 @@ class FarmsRepository extends Repository<Farm> {
     });
 
     if (!checkOwnerExists) {
-      throw new Error('This owner is not registered.');
+      throw new AppError('This owner is not registered.', 404);
     }
     else {
       if( checkOwnerExists.role == 'Propietario') {
@@ -71,13 +76,13 @@ class FarmsRepository extends Repository<Farm> {
           state,
           owner_id,
         });
-    
+
         await farmsRepository.save(farm);
-    
+
         return farm;
       }
       else {
-        throw new Error('This person not is owner.');
+        throw new AppError('This person not is owner.', 404);
       }
     }
 
@@ -94,7 +99,7 @@ class FarmsRepository extends Repository<Farm> {
     const farm = await farmsRepository.findOne(id);
 
     if (!farm) {
-      throw new Error('farm does not exist.');
+      throw new AppError('farm does not exist.', 404);
     }
 
     if (name) farm.name = name;
@@ -113,7 +118,7 @@ class FarmsRepository extends Repository<Farm> {
     const farm = await farmsRepository.findOne(id);
 
     if (!farm) {
-      throw new Error('Farm does not exist.');
+      throw new AppError('Farm does not exist.', 404);
     }
 
     await farmsRepository.remove(farm);
