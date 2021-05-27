@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import Person from './Person';
 
@@ -17,10 +19,10 @@ class Company {
 
   @Column()
   address: string;
-  
+
   @Column()
   city: string;
-  
+
   @Column()
   state: string;
 
@@ -29,6 +31,12 @@ class Company {
 
   @Column()
   owner_id: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @OneToOne(() => Person)
   @JoinColumn({ name: 'owner_id' })

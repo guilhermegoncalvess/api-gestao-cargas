@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('person')
 class Person {
@@ -13,15 +13,21 @@ class Person {
 
   @Column()
   address: string;
-  
+
   @Column()
   city: string;
-  
+
   @Column()
   state: string;
 
   @Column()
   contact: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @Column()
   role: 'Motorista' | 'Embalador' | 'Propietario';
