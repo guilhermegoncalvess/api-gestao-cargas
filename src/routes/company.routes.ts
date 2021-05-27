@@ -1,9 +1,12 @@
 import { Router } from 'express';
 
 import CompaniesRepository from '../repositories/CompaniesRepository';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const companyRouter = Router();
 const companiesRepository = new CompaniesRepository();
+
+companyRouter.use(ensureAuthenticated);
 
 companyRouter.get('/', async (request, response) => {
   try {
@@ -18,11 +21,10 @@ companyRouter.get('/', async (request, response) => {
 });
 
 companyRouter.get('/:id', async (request, response) => {
-  const { id } = request.params;
-
   try {
+    const { id } = request.params;
     const companies = await companiesRepository.findById(id);
-  
+
     return response.json(companies[0]);
 
   }catch (err) {
@@ -33,9 +35,9 @@ companyRouter.get('/:id', async (request, response) => {
 });
 
 companyRouter.post('/', async (request, response) => {
-  const { name, address, city, state, contact, owner_id } = request.body;
-
   try {
+    const { name, address, city, state, contact, owner_id } = request.body;
+
     const company = await companiesRepository.add({
       name,
       address,
@@ -52,9 +54,10 @@ companyRouter.post('/', async (request, response) => {
 });
 
 companyRouter.put('/:id', async (request, response) => {
-  const { id } = request.params;
-  const { name, address, city, state, contact, owner_id } = request.body;
   try {
+    const { id } = request.params;
+    const { name, address, city, state, contact, owner_id } = request.body;
+
     const company = await companiesRepository.alter({
       id,
       name,
@@ -72,8 +75,9 @@ companyRouter.put('/:id', async (request, response) => {
 });
 
 companyRouter.delete('/:id', async (request, response) => {
-  const { id } = request.params;
   try {
+    const { id } = request.params;
+
     await companiesRepository.deleteCompany(id);
 
     return response.json({ status: 'Empresa exluída com sucesso!' });

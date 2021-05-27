@@ -1,15 +1,17 @@
 import { Router } from 'express';
 
 import FarmsRepository from '../repositories/FarmsRepository';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const farmRouter = Router();
 const farmsRepository = new FarmsRepository();
 
-farmRouter.get('/', async (request, response) => {
+farmRouter.use(ensureAuthenticated);
 
+farmRouter.get('/', async (request, response) => {
   try {
     const farms = await farmsRepository.findAll();
-  
+
     return response.json(farms);
 
   }catch (err) {
@@ -20,11 +22,10 @@ farmRouter.get('/', async (request, response) => {
 });
 
 farmRouter.get('/:id', async (request, response) => {
-  const { id } = request.params;
-
   try {
+    const { id } = request.params;
     const farms = await farmsRepository.findById(id);
-  
+
     return response.json(farms[0]);
 
   }catch (err) {
@@ -35,9 +36,9 @@ farmRouter.get('/:id', async (request, response) => {
 });
 
 farmRouter.post('/', async (request, response) => {
-  const { name, address, city, state, owner_id } = request.body;
-
   try {
+    const { name, address, city, state, owner_id } = request.body;
+
     const farm = await farmsRepository.add({
       name,
       address,
@@ -53,10 +54,10 @@ farmRouter.post('/', async (request, response) => {
 });
 
 farmRouter.put('/:id', async (request, response) => {
-  const { id } = request.params;
-  const { name, address, city, state, owner_id } = request.body;
-
   try {
+    const { id } = request.params;
+    const { name, address, city, state, owner_id } = request.body;
+
     const person = await farmsRepository.alter({
       id,
       name,
@@ -73,9 +74,9 @@ farmRouter.put('/:id', async (request, response) => {
 });
 
 farmRouter.delete('/:id', async (request, response) => {
-  const { id } = request.params;
-
   try {
+    const { id } = request.params;
+
     await farmsRepository.deleteFarm(id);
 
     return response.json({ status: 'Fazenda exluída com sucesso!' });

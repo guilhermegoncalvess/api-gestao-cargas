@@ -1,14 +1,17 @@
 import { Router } from 'express';
 
 import ServicesRepository from '../repositories/ServicesRepository';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
+serviceRouter.use(ensureAuthenticated);
+
 serviceRouter.get('/', async (request, response) => {
   try {
     const service = await servicesRepository.findAll();
-  
+
     return response.json(service);
 
   } catch (err) {
