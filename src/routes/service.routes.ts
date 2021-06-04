@@ -1,25 +1,35 @@
 import { Router } from 'express';
 
 import ServicesRepository from '../repositories/ServicesRepository';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const serviceRouter = Router();
 const servicesRepository = new ServicesRepository();
 
-serviceRouter.post('/', (request, response) => {
-  const { employee, load } = request.body;
+serviceRouter.use(ensureAuthenticated);
 
-  const service = servicesRepository.create({
-    employee,
-    load,
-  });
+serviceRouter.get('/', async (request, response) => {
+  const service = await servicesRepository.findAll();
 
   return response.json(service);
 });
 
-serviceRouter.get('/', (request, response) => {
-  const employ = servicesRepository;
+serviceRouter.get('/:load', async (request, response) => {
+  const { load } = request.params;
+  const service = await servicesRepository.findEmployeeByLoad(load);
 
-  return response.json(employ);
+  return response.json(service);
+});
+
+serviceRouter.post('/', async (request, response) => {
+  const { employees_id, load_id } = request.body;
+
+  const service = await servicesRepository.add({
+    employees_id,
+    load_id,
+  });
+
+  return response.status(201).json(service);
 });
 
 export default serviceRouter;

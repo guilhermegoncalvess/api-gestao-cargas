@@ -1,17 +1,22 @@
-import { uuid } from 'uuidv4';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import Person from './Person';
+import Load from './Load';
 
+@Entity('service')
 class Service {
-  id: string;
+  @PrimaryColumn()
+  employee_id: string;
 
-  employee: string;
+  @ManyToOne(() => Person)
+  @JoinColumn({ name: 'employee_id' })
+  employee: Person;
 
-  load: string;
+  @PrimaryColumn()
+  load_id: string;
 
-  constructor({ employee, load }: Omit<Service, 'id'>) {
-    this.id = uuid();
-    this.employee = employee;
-    this.load = load;
-  }
+  @ManyToOne(() => Load)
+  @JoinColumn({ name: 'load_id' })
+  load: Load;
 }
 
 export default Service;

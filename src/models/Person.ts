@@ -1,26 +1,36 @@
-import { uuid } from 'uuidv4';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
+@Entity('person')
 class Person {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   name: string;
 
+  @Column()
   nickname: string;
 
+  @Column()
   address: string;
 
+  @Column()
+  city: string;
+
+  @Column()
+  state: string;
+
+  @Column()
   contact: string;
 
-  role: 'Motorista' | 'Embalador' | 'Propietario';
+  @CreateDateColumn()
+  created_at: Date;
 
-  constructor({ name, nickname, address, contact, role }: Omit<Person, 'id'>) {
-    this.id = uuid();
-    this.name = name;
-    this.nickname = nickname;
-    this.address = address;
-    this.contact = contact;
-    this.role = role;
-  }
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @Column()
+  role: 'Motorista' | 'Embalador' | 'Propietario';
 }
 
 export default Person;

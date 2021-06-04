@@ -1,28 +1,76 @@
 import { Router } from 'express';
 
-import EmployeesRepository from '../repositories/PersonsRepository';
+import PersonsRepository from '../repositories/PersonsRepository';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
-const employeeRouter = Router();
-const employeesRepository = new EmployeesRepository();
+const personRouter = Router();
+const personsRepository = new PersonsRepository();
 
-employeeRouter.post('/', (request, response) => {
-  const { name, nickname, address, contact, role } = request.body;
+personRouter.use(ensureAuthenticated);
 
-  const employee = employeesRepository.create({
+personRouter.get('/', async (request, response) => {
+    const persons = await personsRepository.findAll();
+
+    return response.json(persons);
+});
+
+personRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  const person = await personsRepository.findById(id);
+
+  return response.json(person);
+});
+
+personRouter.get('/:role', async (request, response) => {
+  const { role } = request.params;
+
+  const person = await personsRepository.findByRole(role);
+
+  return response.json(person);
+});
+
+personRouter.post('/', async (request, response) => {
+  const { name, nickname, address, city, state, contact, role } = request.body;
+
+  const person = await personsRepository.add({
     name,
     nickname,
     address,
+    city,
+    state,
     contact,
     role,
   });
 
-  return response.json(employee);
+  return response.status(201).json(person);
 });
 
-employeeRouter.get('/', (request, response) => {
-  const employ = employeesRepository;
+personRouter.put('/:id', async (request, response) => {
+  const { id } = request.params;
+  const { name, nickname, address, city, state, contact, role } = request.body;
 
-  return response.json(employ);
+  const person = await personsRepository.alter({
+    id,
+    name,
+    nickname,
+    address,
+    city,
+    state,
+    contact,
+    role,
+  });
+
+  return response.json(person);
 });
 
-export default employeeRouter;
+personRouter.delete('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  const rolePerson = await personsRepository.deletePerson(id);
+
+  return response.json({ status: `${rolePerson} exluído com sucesso!` });
+
+});
+
+export default personRouter;
