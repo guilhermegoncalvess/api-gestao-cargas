@@ -14,6 +14,7 @@ routes.use('/companies', companyRouter);
 routes.use('/farms', farmRouter);
 routes.use('/services', serviceRouter);
 routes.use('/loads', loadRouter);
+
 routes.use('/users', userRouter);
 routes.use('/sessions', sessionsRouter);
 
