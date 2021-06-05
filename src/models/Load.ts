@@ -4,6 +4,9 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import Company from './Company';
 import Farm from './Farm';
@@ -13,22 +16,8 @@ class Load {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  date: string;
-
-  @Column()
+  @PrimaryColumn()
   company_id: string;
-
-  @ManyToOne(() => Farm)
-  @JoinColumn({ name: 'company_id' })
-  company: Company;
-
-  @Column()
-  farm_id: string;
-
-  @ManyToOne(() => Farm)
-  @JoinColumn({ name: 'farm_id' })
-  farm: Farm;
 
   @Column()
   weight: number;
@@ -37,7 +26,25 @@ class Load {
   cost: number;
 
   @Column()
-  type: 'truck' | 'bitruck' | 'carretinha';
+  type: string;
+
+  @Column()
+  description: string;
+
+  @Column()
+  status: string;
+
+  @Column()
+  start_date: Date;
+
+  @Column()
+  finished_date: Date;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
 
 export default Load;

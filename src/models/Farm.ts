@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import Person from './Person';
+import Service from './Service';
 
 @Entity('farm')
 class Farm {
@@ -17,6 +17,9 @@ class Farm {
 
   @Column()
   name: string;
+
+  @Column()
+  owner: string;
 
   @Column()
   address: string;
@@ -28,9 +31,6 @@ class Farm {
   state: string;
 
   @Column()
-  owner_id: string;
-
-  @Column()
   contact: string;
 
   @CreateDateColumn()
@@ -39,9 +39,8 @@ class Farm {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Person)
-  @JoinColumn({ name: 'owner_id' })
-  owner: Person;
+  @ManyToOne(() => Service, () => Farm)
+  services: Service[];
 }
 
 export default Farm;

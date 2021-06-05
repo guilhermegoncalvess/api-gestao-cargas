@@ -6,8 +6,12 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
-import Person from './Person';
+import Employee from './Employee';
+import Load from './Load';
+import User from './User';
 
 @Entity('company')
 class Company {
@@ -16,6 +20,9 @@ class Company {
 
   @Column()
   name: string;
+
+  @Column()
+  cnpj: string;
 
   @Column()
   address: string;
@@ -29,18 +36,20 @@ class Company {
   @Column()
   contact: string;
 
-  @Column()
-  owner_id: string;
-
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToOne(() => Person)
-  @JoinColumn({ name: 'owner_id' })
-  owner: Person;
+  @ManyToOne(() => User, () => Company)
+  users: User[];
+
+  @ManyToOne(() => Employee, () => Company)
+  employees: User[];
+
+  @OneToMany(() => Company, () => Load)
+  loads: Load[];
 }
 
 export default Company;
