@@ -7,7 +7,7 @@ import {
 import AppError from '../errors/AppError';
 
 import Farm from '../models/Farm';
-import PersonRepository from './PersonsRepository';
+import PersonRepository from './EmployeesRepository';
 
 interface CreateFarmDTO {
   id?: string;
@@ -15,7 +15,7 @@ interface CreateFarmDTO {
   address: string;
   city: string;
   state: string;
-  owner_id: string;
+  owner: string;
 }
 
 @EntityRepository(Farm)
@@ -50,50 +50,51 @@ class FarmsRepository extends Repository<Farm> {
 
     return farm;
   }
+  //corrigir rota de add
 
-  public async add({
-    name,
-    city,
-    state,
-    owner_id,
-  }: CreateFarmDTO): Promise<Farm> {
-    const farmsRepository = getCustomRepository(FarmsRepository);
-    const personRepository = getCustomRepository(PersonRepository);
+  // public async add({
+  //   name,
+  //   city,
+  //   state,
+  //   owner,
+  // }: CreateFarmDTO): Promise<Farm> {
+  //   const farmsRepository = getCustomRepository(FarmsRepository);
+  //   const personRepository = getCustomRepository(PersonRepository);
 
-    const checkOwnerExists = await personRepository.findOne({
-      where: { id: owner_id },
-    });
+  //   const checkOwnerExists = await personRepository.findOne({
+  //     where: { id: owner },
+  //   });
 
-    if (!checkOwnerExists) {
-      throw new AppError('This owner is not registered.', 404);
-    }
-    else {
-      if( checkOwnerExists.role == 'Propietario') {
+  //   if (!checkOwnerExists) {
+  //     throw new AppError('This owner is not registered.', 404);
+  //   }
+  //   else {
+  //     if( checkOwnerExists.role == 'Propietario') {
 
-        const farm = farmsRepository.create({
-          name,
-          city,
-          state,
-          owner_id,
-        });
+  //       const farm = farmsRepository.create({
+  //         name,
+  //         city,
+  //         state,
+  //         owner,
+  //       });
 
-        await farmsRepository.save(farm);
+  //       await farmsRepository.save(farm);
 
-        return farm;
-      }
-      else {
-        throw new AppError('This person not is owner.', 404);
-      }
-    }
+  //       return farm;
+  //     }
+  //     else {
+  //       throw new AppError('This person not is owner.', 404);
+  //     }
+  //   }
 
-  }
+  // }
 
   public async alter({
     id,
     name,
     city,
     state,
-    owner_id,
+    owner,
   }: CreateFarmDTO): Promise<Farm> {
     const farmsRepository = getRepository(Farm);
     const farm = await farmsRepository.findOne(id);
@@ -105,7 +106,7 @@ class FarmsRepository extends Repository<Farm> {
     if (name) farm.name = name;
     if (city) farm.city = city;
     if (state) farm.state = state;
-    if (owner_id) farm.owner_id = owner_id;
+    if (owner) farm.owner = owner;
 
     await farmsRepository.save(farm);
 

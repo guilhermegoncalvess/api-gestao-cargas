@@ -1,12 +1,15 @@
 import { EntityRepository, getRepository, Repository } from 'typeorm';
 import AppError from '../errors/AppError';
+import Company from '../models/Company';
 
 import User from '../models/User';
 
 interface CreateuserDTO {
   id?: string;
+  company_id?: string;
   email: string;
   password: string;
+  role: string;
 }
 
 @EntityRepository(User)
@@ -56,14 +59,26 @@ class usersRepository extends Repository<User> {
   }
 
   public async add({
+    company_id,
     email,
     password,
+    role,
   }: CreateuserDTO): Promise<User> {
     const usersRepository = getRepository(User);
 
+    const companiesRepository = getRepository(Company);
+
+    const company = companiesRepository.findOne(company_id)
+
+    if(!company) {
+      throw new AppError('Company does not exist.', 404);
+    }
+
     const user = usersRepository.create({
+      company_id,
       password,
       email,
+      role,
     });
 
     await usersRepository.save(user);
@@ -75,6 +90,7 @@ class usersRepository extends Repository<User> {
     id,
     email,
     password,
+    role,
   }: CreateuserDTO): Promise<User> {
     const usersRepository = getRepository(User);
     const user = await usersRepository.findOne(id);
@@ -85,6 +101,7 @@ class usersRepository extends Repository<User> {
 
     if (email) user.email = email;
     if (password) user.password = password;
+    if (role) user.role = role;
 
     await usersRepository.save(user);
 

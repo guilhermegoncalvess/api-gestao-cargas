@@ -7,7 +7,7 @@ import {
 import AppError from '../errors/AppError';
 
 import Company from '../models/Company';
-import PersonsRepository from './PersonsRepository';
+import PersonsRepository from './EmployeesRepository';
 
 interface CreateCompanyDTO {
   id?: string;
@@ -52,6 +52,9 @@ class CompaniesRepository extends Repository<Company> {
     return company;
   }
 
+
+  //corrigir esse método
+
   public async add({
     name,
     address,
@@ -59,7 +62,7 @@ class CompaniesRepository extends Repository<Company> {
     state,
     contact,
     owner_id,
-  }: CreateCompanyDTO): Promise<Company> {
+  }: CreateCompanyDTO): Promise<void> {
     const companiesRepository = getCustomRepository(CompaniesRepository);
     const personRepository = getCustomRepository(PersonsRepository);
 
@@ -71,24 +74,24 @@ class CompaniesRepository extends Repository<Company> {
       throw new AppError('This owner is not registered.', 404);
     }
     else {
-      if( checkOwnerExists.role == 'Propietario'){
+      // if( checkOwnerExists.role == 'Propietario'){
 
-        const company = companiesRepository.create({
-          name,
-          address,
-          city,
-          state,
-          contact,
-          owner_id,
-        });
+      //   const company = companiesRepository.create({
+      //     name,
+      //     address,
+      //     city,
+      //     state,
+      //     contact,
+      //     owner_id,
+      //   });
 
-        await companiesRepository.save(company);
+      //   await companiesRepository.save(company);
 
-        return company;
-      }
-      else {
-        throw new AppError('This person not is owner.', 404 );
-      }
+      //   return company;
+      // }
+      // else {
+      //   throw new AppError('This person not is owner.', 404 );
+      // }
     }
   }
 
@@ -113,7 +116,6 @@ class CompaniesRepository extends Repository<Company> {
     if (city) company.city = city;
     if (state) company.state = state;
     if (contact) company.contact = contact;
-    if (owner_id) company.owner_id = owner_id;
 
     await companiesRepository.save(company);
 
