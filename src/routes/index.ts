@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import personRouter from './person.routes';
+import employeeRouter from './employee.routes';
 import companyRouter from './company.routes';
 import farmRouter from './farm.routes';
 import serviceRouter from './service.routes';
@@ -9,7 +9,7 @@ import sessionsRouter from './sessions.routes';
 
 const routes = Router();
 
-routes.use('/persons', personRouter);
+routes.use('/employees', employeeRouter);
 routes.use('/companies', companyRouter);
 routes.use('/farms', farmRouter);
 routes.use('/services', serviceRouter);

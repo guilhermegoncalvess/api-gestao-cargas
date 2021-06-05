@@ -16,15 +16,17 @@ loadRouter.get('/', async (request, response) => {
 });
 
 loadRouter.post('/', async (request, response) => {
-  const { date, company_id, farm_id, weight, cost, type } = request.body;
+  const { company_id, weight, cost, type, status, description, start_date, finished_date } = request.body;
 
   const load = await loadsRepository.add({
-    date,
     company_id,
-    farm_id,
     weight,
     cost,
     type,
+    status,
+    description,
+    start_date,
+    finished_date
   });
 
   return response.status(201).json(load);

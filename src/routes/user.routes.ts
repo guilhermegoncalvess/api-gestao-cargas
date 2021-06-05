@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 import UsersRepository from '../repositories/UsersRepository';
 import CreateUserService from '../services/CreateUserService';
@@ -6,32 +7,19 @@ import CreateUserService from '../services/CreateUserService';
 const userRouter = Router();
 const usersRepository = new UsersRepository();
 
+// userRouter.use(ensureAuthenticated);
+
 userRouter.get('/', async (request, response) => {
-  try {
+  const users = await usersRepository.findAll();
 
-    const users = await usersRepository.findAll();
-
-
-    return response.json(users);
-  } catch (err) {
-    return response
-      .status(400)
-      .json({ message: err.message });
-  }
-
+  return response.json(users);
 });
 
 userRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
-  try {
-    const user = await usersRepository.findById(id);
+  const user = await usersRepository.findById(id);
 
-    return response.json(user);
-  } catch (err) {
-    return response
-      .status(400)
-      .json({ message: 'Nenhuma pessoa foi encontrada.' });
-  }
+  return response.json(user);
 });
 
 
@@ -54,12 +42,13 @@ userRouter.post('/', async (request, response) => {
 
 userRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { email, password } = request.body;
+  const { email, password, role } = request.body;
 
   const user = await usersRepository.alter({
     id,
     email,
     password,
+    role,
   });
 
   return response.json(user);
