@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import {MigrationInterface, QueryRunner, Table, TableForeignKey} from "typeorm";
 
 export class CreateLoads1621455089621 implements MigrationInterface {
 
@@ -9,20 +9,15 @@ export class CreateLoads1621455089621 implements MigrationInterface {
             columns: [
               {
                 name: 'id',
-                type: 'varchar',
+                type: 'uuid',
                 isPrimary: true,
                 generationStrategy: 'uuid',
                 default: 'uuid_generate_v4()'
               },
               {
                 name: 'company_id',
-                type: 'varchar',
-                isNullable: false,
-              },
-              {
-                name: 'farm_id',
-                type: 'varchar',
-                isNullable: false,
+                type: 'uuid',
+                isNullable: true,
               },
               {
                 name: 'weight',
@@ -40,9 +35,24 @@ export class CreateLoads1621455089621 implements MigrationInterface {
                 isNullable: false,
               },
               {
-                name: 'date',
+                name: 'description',
+                type: 'varchar',
+                isNullable: true,
+              },
+              {
+                name: 'status',
+                type: 'varchar',
+                isNullable: false,
+              },
+              {
+                name: 'start_date',
                 type: 'timestamp with time zone',
                 isNullable: false,
+              },
+              {
+                name: 'finished_date',
+                type: 'timestamp with time zone',
+                isNullable: true,
               },
               {
                 name: 'created_at',
@@ -55,12 +65,24 @@ export class CreateLoads1621455089621 implements MigrationInterface {
                 default: 'now()',
               },
             ],
-        })  
-      )  
+        })
+      )
+
+      await queryRunner.createForeignKey('load', new TableForeignKey({
+        name: 'LoadCompany',
+        columnNames: ['company_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'company',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+      }));
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('load');
+      await queryRunner.dropForeignKey( 'load','LoadCompany');
+
+      await queryRunner.dropTable('load');
     }
 
 }
