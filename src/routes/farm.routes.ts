@@ -23,23 +23,24 @@ farmRouter.get('/:id', async (request, response) => {
 
 });
 
-// farmRouter.post('/', async (request, response) => {
-//   const { name, address, city, state, owner } = request.body;
+farmRouter.post('/', async (request, response) => {
+  const { name, address, city, state, contact, owner } = request.body;
 
-//   const farm = await farmsRepository.add({
-//     name,
-//     address,
-//     city,
-//     state,
-//     owner,
-//   });
+  const farm = await farmsRepository.add({
+    name,
+    address,
+    city,
+    state,
+    contact,
+    owner,
+  });
 
-//   return response.status(201).json(farm);
-// });
+  return response.status(201).json(farm);
+});
 
 farmRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { name, address, city, state, owner } = request.body;
+  const { name, address, city, state, contact, owner } = request.body;
 
   const person = await farmsRepository.alter({
     id,
@@ -47,6 +48,7 @@ farmRouter.put('/:id', async (request, response) => {
     address,
     city,
     state,
+    contact,
     owner,
   });
 

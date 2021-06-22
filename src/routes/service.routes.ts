@@ -22,11 +22,13 @@ serviceRouter.get('/:load', async (request, response) => {
 });
 
 serviceRouter.post('/', async (request, response) => {
-  const { employees_id, load_id } = request.body;
+  const { employees_id, load_id, farm_id, date} = request.body;
 
   const service = await servicesRepository.add({
     employees_id,
     load_id,
+    farm_id,
+    date,
   });
 
   return response.status(201).json(service);

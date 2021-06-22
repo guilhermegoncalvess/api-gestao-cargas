@@ -24,13 +24,15 @@ userRouter.get('/:id', async (request, response) => {
 
 
 userRouter.post('/', async (request, response) => {
-  const { email, password } = request.body;
+  const { company_id, email, password, role } = request.body;
 
   const createUser = new CreateUserService();
 
   const user = await createUser.execute({
+    company_id,
     email,
     password,
+    role,
   });
 
   // @ts-expect-error
@@ -42,10 +44,11 @@ userRouter.post('/', async (request, response) => {
 
 userRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { email, password, role } = request.body;
+  const { company_id, email, password, role } = request.body;
 
   const user = await usersRepository.alter({
     id,
+    company_id,
     email,
     password,
     role,
