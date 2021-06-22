@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn
+} from 'typeorm';
+
 import Company from './Company';
 
 @Entity('user')
@@ -24,8 +33,8 @@ class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Company, () => User)
-  @JoinColumn({ name: 'company_id' })
+  @ManyToOne(() => Company, company => company.users)
+  @JoinColumn({ name: 'company_id'})
   company: Company;
 }
 

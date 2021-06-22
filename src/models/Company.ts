@@ -2,13 +2,11 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
   OneToMany,
 } from 'typeorm';
+
 import Employee from './Employee';
 import Load from './Load';
 import User from './User';
@@ -42,13 +40,13 @@ class Company {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => User, () => Company)
+  @OneToMany(() => User, users => users.company )
   users: User[];
 
-  @ManyToOne(() => Employee, () => Company)
-  employees: User[];
+  @OneToMany(() => Employee, employees => employees.company )
+  employees: Employee[];
 
-  @OneToMany(() => Company, () => Load)
+  @OneToMany( () => Load, loads => loads.company )
   loads: Load[];
 }
 

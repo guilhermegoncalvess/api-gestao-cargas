@@ -1,8 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, PrimaryColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  PrimaryColumn,
+  JoinColumn,
+  OneToOne
+} from 'typeorm';
+
 import Company from './Company';
 import Service from './Service';
 
-@Entity('person')
+@Entity('employee')
 class Employee {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -37,12 +47,14 @@ class Employee {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Company, () => Employee)
+  @ManyToOne(() => Company, () => Employee)
   @JoinColumn( {name: 'company_id' })
   company: Company;
 
-  @OneToMany(() => Service, () => Employee)
-  services: Service[]
+
+  @OneToOne( () => Service, service => service.employees )
+  services: Service[];
+
 }
 
 export default Employee;

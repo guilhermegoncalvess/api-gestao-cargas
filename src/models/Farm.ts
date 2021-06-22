@@ -2,12 +2,11 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  JoinColumn,
-  OneToOne,
-  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
 import Service from './Service';
 
 @Entity('farm')
@@ -39,7 +38,7 @@ class Farm {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Service, () => Farm)
+  @OneToMany(() => Service, service => service.farm)
   services: Service[];
 }
 

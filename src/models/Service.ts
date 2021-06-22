@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn
+} from 'typeorm';
+
 import Employee from './Employee';
 import Farm from './Farm';
 import Load from './Load';
@@ -23,11 +31,11 @@ class Service {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Employee, () => Service)
-  @JoinColumn({ name: 'employee_id' })
-  employee: Employee[];
+  @ManyToOne(() => Employee, employee => employee.services )
+  @JoinColumn({ name: 'employee_id'})
+  employees: Employee[];
 
-  @OneToMany(() => Farm, () => Service)
+  @ManyToOne(() => Farm, farm => farm.services)
   @JoinColumn({ name: 'farm_id' })
   farm: Farm;
 

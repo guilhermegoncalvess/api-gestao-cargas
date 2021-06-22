@@ -8,8 +8,8 @@ import {
   UpdateDateColumn,
   PrimaryColumn,
 } from 'typeorm';
+
 import Company from './Company';
-import Farm from './Farm';
 
 @Entity('load')
 class Load {
@@ -45,6 +45,11 @@ class Load {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Company, () => Load )
+  @JoinColumn({ name: 'company_id'})
+  company: Company;
+
 }
 
 export default Load;
