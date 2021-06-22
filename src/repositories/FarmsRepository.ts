@@ -7,7 +7,6 @@ import {
 import AppError from '../errors/AppError';
 
 import Farm from '../models/Farm';
-import PersonRepository from './EmployeesRepository';
 
 interface CreateFarmDTO {
   id?: string;
@@ -15,6 +14,7 @@ interface CreateFarmDTO {
   address: string;
   city: string;
   state: string;
+  contact: string;
   owner: string;
 }
 
@@ -25,7 +25,6 @@ class FarmsRepository extends Repository<Farm> {
 
     const farms = await farmsRepository.find({
       select: ['id', 'name', 'city', 'state'],
-      relations: ['owner'],
     });
 
     if (!farms) {
@@ -40,7 +39,6 @@ class FarmsRepository extends Repository<Farm> {
 
     const farm = await farmsRepository.find({
       select: ['name', 'city', 'state'],
-      relations: ['owner'],
       where: { id },
     });
 
@@ -50,50 +48,39 @@ class FarmsRepository extends Repository<Farm> {
 
     return farm;
   }
-  //corrigir rota de add
 
-  // public async add({
-  //   name,
-  //   city,
-  //   state,
-  //   owner,
-  // }: CreateFarmDTO): Promise<Farm> {
-  //   const farmsRepository = getCustomRepository(FarmsRepository);
-  //   const personRepository = getCustomRepository(PersonRepository);
+  public async add({
+    name,
+    address,
+    city,
+    state,
+    contact,
+    owner,
+  }: CreateFarmDTO): Promise<Farm> {
+    const farmsRepository = getCustomRepository(FarmsRepository);
 
-  //   const checkOwnerExists = await personRepository.findOne({
-  //     where: { id: owner },
-  //   });
+    const farm = farmsRepository.create({
+      name,
+      city,
+      address,
+      state,
+      contact,
+      owner,
+    });
 
-  //   if (!checkOwnerExists) {
-  //     throw new AppError('This owner is not registered.', 404);
-  //   }
-  //   else {
-  //     if( checkOwnerExists.role == 'Propietario') {
+    await farmsRepository.save(farm);
 
-  //       const farm = farmsRepository.create({
-  //         name,
-  //         city,
-  //         state,
-  //         owner,
-  //       });
+    return farm;
 
-  //       await farmsRepository.save(farm);
-
-  //       return farm;
-  //     }
-  //     else {
-  //       throw new AppError('This person not is owner.', 404);
-  //     }
-  //   }
-
-  // }
+  }
 
   public async alter({
     id,
+    address,
     name,
     city,
     state,
+    contact,
     owner,
   }: CreateFarmDTO): Promise<Farm> {
     const farmsRepository = getRepository(Farm);
@@ -104,8 +91,10 @@ class FarmsRepository extends Repository<Farm> {
     }
 
     if (name) farm.name = name;
+    if (address) farm.address = address;
     if (city) farm.city = city;
     if (state) farm.state = state;
+    if (contact) farm.contact = contact;
     if (owner) farm.owner = owner;
 
     await farmsRepository.save(farm);

@@ -11,6 +11,8 @@ import Service from '../models/Service';
 interface CreateRepositoryDTO {
   employees_id: string[];
   load_id: string;
+  farm_id: string;
+  date: Date;
 }
 
 @EntityRepository(Service)
@@ -19,7 +21,7 @@ class ServicesRepository extends Repository<Service> {
     const servicesRepository = getRepository(Service);
 
     const services = await servicesRepository.find({
-      select: ['load_id', 'employee_id'],
+      select: ['load_id', 'farm_id', 'employee_id','date'],
     });
 
     if (!services) {
@@ -48,6 +50,8 @@ class ServicesRepository extends Repository<Service> {
   public async add({
     employees_id,
     load_id,
+    farm_id,
+    date
   }: CreateRepositoryDTO): Promise<Service[]> {
     const servicesRepository = getCustomRepository(ServicesRepository);
 
@@ -55,6 +59,8 @@ class ServicesRepository extends Repository<Service> {
       employees_id.map(employee_id => ({
         employee_id,
         load_id,
+        farm_id,
+        date
       })),
     );
 

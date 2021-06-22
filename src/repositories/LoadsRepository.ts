@@ -28,7 +28,8 @@ class LoadsRepository extends Repository<Load> {
     const loadsRepository = getRepository(Load);
 
     const loads = await loadsRepository.find({
-      select: ['id', 'company_id', 'start_date', 'weight', 'cost'],
+      select: ['id', 'weight', 'cost', 'status', 'start_date', 'finished_date'],
+      // relations: ['company'],
     });
 
     if (!loads) {

@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { EntityRepository, getRepository, Repository } from 'typeorm';
 import AppError from '../errors/AppError';
 import Company from '../models/Company';
@@ -58,7 +59,8 @@ class usersRepository extends Repository<User> {
     return user;
   }
 
-  public async add({
+  public async alter({
+    id,
     company_id,
     email,
     password,
@@ -66,41 +68,16 @@ class usersRepository extends Repository<User> {
   }: CreateuserDTO): Promise<User> {
     const usersRepository = getRepository(User);
 
-    const companiesRepository = getRepository(Company);
-
-    const company = companiesRepository.findOne(company_id)
-
-    if(!company) {
-      throw new AppError('Company does not exist.', 404);
-    }
-
-    const user = usersRepository.create({
-      company_id,
-      password,
-      email,
-      role,
-    });
-
-    await usersRepository.save(user);
-
-    return user;
-  }
-
-  public async alter({
-    id,
-    email,
-    password,
-    role,
-  }: CreateuserDTO): Promise<User> {
-    const usersRepository = getRepository(User);
-    const user = await usersRepository.findOne(id);
+    const user = await usersRepository.findOne({id, company_id});
 
     if (!user) {
       throw new AppError('user does not exist.', 404);
     }
 
+    const hashedPassword = await hash(password, 8);
+
     if (email) user.email = email;
-    if (password) user.password = password;
+    if (password) user.password = hashedPassword;
     if (role) user.role = role;
 
     await usersRepository.save(user);

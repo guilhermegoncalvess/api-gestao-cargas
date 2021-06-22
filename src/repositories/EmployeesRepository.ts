@@ -21,6 +21,7 @@ class employeesRepository extends Repository<Employee> {
 
     const employees = await employeesRepository.find({
       select: ['id', 'address', 'contact', 'name', 'nickname', 'responsibility'],
+      // relations: ['services']
     });
 
     if (!employees) {
