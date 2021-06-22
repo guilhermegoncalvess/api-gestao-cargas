@@ -21,7 +21,7 @@ export class CreateCompanies1621452608551 implements MigrationInterface {
               },
               {
                 name: 'cnpj',
-                type: 'int',
+                type: 'varchar',
                 isNullable: false,
               },
               {
