@@ -45,6 +45,11 @@ export class CreateCompanies1621452608551 implements MigrationInterface {
                 isNullable: false,
               },
               {
+                name: 'status',
+                type: 'varchar',
+                isNullable: false,
+              },
+              {
                 name: 'created_at',
                 type: 'timestamp',
                 default: 'now()',

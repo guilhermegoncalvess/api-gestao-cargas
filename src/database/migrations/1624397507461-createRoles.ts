@@ -1,11 +1,11 @@
 import {MigrationInterface, QueryRunner, Table, TableForeignKey} from "typeorm";
 
-export class createUsers1621624785538 implements MigrationInterface {
+export class createRoles1624397507461 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.createTable(
         new Table({
-          name: 'user',
+          name: 'role',
           columns: [
             {
               name: 'id',
@@ -20,18 +20,13 @@ export class createUsers1621624785538 implements MigrationInterface {
               isNullable: false,
             },
             {
-              name: 'email',
-              type: 'varchar',
-              isUnique: true,
-            },
-            {
-              name: 'password',
+              name: 'name',
               type: 'varchar',
               isNullable: false,
             },
             {
-              name: 'role',
-              type: 'varchar',
+              name: 'permission',
+              type: 'jsonb',
               isNullable: false,
             },
             {
@@ -44,13 +39,12 @@ export class createUsers1621624785538 implements MigrationInterface {
               type: 'timestamp',
               default: 'now()',
             },
-
           ]
         })
-      )
+      );
 
-      await queryRunner.createForeignKey('user', new TableForeignKey({
-        name: 'UserOfCompany',
+      await queryRunner.createForeignKey('role', new TableForeignKey({
+        name: 'RoleByCompany',
         columnNames: ['company_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'company',
@@ -60,7 +54,9 @@ export class createUsers1621624785538 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.dropTable('user');
+      await queryRunner.dropForeignKey( 'role','RoleByCompany');
+
+      await queryRunner.dropTable('role');
     }
 
 }
