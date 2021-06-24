@@ -10,6 +10,7 @@ import {
 import Employee from './Employee';
 import Load from './Load';
 import User from './User';
+import Role from './Role';
 
 @Entity('company')
 class Company {
@@ -34,6 +35,9 @@ class Company {
   @Column()
   contact: string;
 
+  @Column()
+  status: string;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -42,6 +46,9 @@ class Company {
 
   @OneToMany(() => User, users => users.company )
   users: User[];
+
+  @OneToMany(() => Role, role => role.company )
+  roles: Role[];
 
   @OneToMany(() => Employee, employees => employees.company )
   employees: Employee[];
