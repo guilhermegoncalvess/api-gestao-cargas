@@ -24,7 +24,7 @@ userRouter.get('/:id', async (request, response) => {
 
 
 userRouter.post('/', async (request, response) => {
-  const { company_id, email, password, role } = request.body;
+  const { company_id, email, password, role_id } = request.body;
 
   const createUser = new CreateUserService();
 
@@ -32,7 +32,7 @@ userRouter.post('/', async (request, response) => {
     company_id,
     email,
     password,
-    role,
+    role_id,
   });
 
   // @ts-expect-error
