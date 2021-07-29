@@ -68,7 +68,7 @@ class usersRepository extends Repository<User> {
   }: CreateuserDTO): Promise<User> {
     const usersRepository = getRepository(User);
 
-    const user = await usersRepository.findOne({id, company_id});
+    const user = await usersRepository.findOne({ id });
 
     if (!user) {
       throw new AppError('user does not exist.', 404);
@@ -78,7 +78,7 @@ class usersRepository extends Repository<User> {
 
     if (email) user.email = email;
     if (password) user.password = hashedPassword;
-    if (role) user.role = role;
+    // if (role) user.role = role;
 
     await usersRepository.save(user);
 

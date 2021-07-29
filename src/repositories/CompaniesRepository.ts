@@ -16,6 +16,7 @@ interface CreateCompanyDTO {
   city?: string;
   state?: string;
   contact: string;
+  status: string;
 }
 
 @EntityRepository(Company)
@@ -59,6 +60,7 @@ class CompaniesRepository extends Repository<Company> {
     city,
     state,
     contact,
+    status
   }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getCustomRepository(CompaniesRepository);
 
@@ -69,6 +71,7 @@ class CompaniesRepository extends Repository<Company> {
       city,
       state,
       contact,
+      status
     });
 
     await companiesRepository.save(company);
@@ -86,6 +89,7 @@ class CompaniesRepository extends Repository<Company> {
     city,
     state,
     contact,
+    status
   }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getRepository(Company);
     const company = await companiesRepository.findOne(id);
@@ -100,6 +104,7 @@ class CompaniesRepository extends Repository<Company> {
     if (city) company.city = city;
     if (state) company.state = state;
     if (contact) company.contact = contact;
+    if (status) company.status = status;
 
     await companiesRepository.save(company);
 

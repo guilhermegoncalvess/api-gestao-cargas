@@ -3,7 +3,7 @@ import AppError from '../errors/AppError';
 import Employee from '../models/Employee';
 
 
-interface CreatePersonDTO {
+interface CreateEmployeeDTO {
   id?: string;
   name: string;
   nickname: string;
@@ -69,7 +69,7 @@ class employeesRepository extends Repository<Employee> {
     state,
     contact,
     responsibility,
-  }: CreatePersonDTO): Promise<Employee> {
+  }: CreateEmployeeDTO): Promise<Employee> {
     const employeesRepository = getRepository(Employee);
 
     const employee = employeesRepository.create({
@@ -94,7 +94,7 @@ class employeesRepository extends Repository<Employee> {
     address,
     contact,
     responsibility,
-  }: CreatePersonDTO): Promise<Employee> {
+  }: CreateEmployeeDTO): Promise<Employee> {
     const employeesRepository = getRepository(Employee);
     const employee = await employeesRepository.findOne(id);
 
@@ -116,7 +116,7 @@ class employeesRepository extends Repository<Employee> {
   public async deletePerson(id: string): Promise<string> {
     const employeesRepository = getRepository(Employee);
 
-    const employee = await employeesRepository.findOne(id);
+    const employee = await employeesRepository.findOne({ id });
 
     if (!employee) {
       throw new AppError('Employee does not exist.', 404);
