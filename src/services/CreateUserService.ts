@@ -10,11 +10,11 @@ interface Request {
   company_id: string;
   email: string;
   password: string;
-  role: string;
+  role_id: string;
 }
 
 class CreateUserService {
-  public async execute({ company_id, email, password, role }: Request): Promise<User> {
+  public async execute({ company_id, email, password, role_id }: Request): Promise<User> {
     const usersRepository = getRepository(User);
     const companiesRepository = getRepository(Company);
 
@@ -38,7 +38,7 @@ class CreateUserService {
       company_id,
       email,
       password: hashedPassword,
-      role,
+      role_id,
     });
 
     await usersRepository.save(user);
