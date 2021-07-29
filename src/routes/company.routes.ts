@@ -1,12 +1,12 @@
 import { Router } from 'express';
 
 import CompaniesRepository from '../repositories/CompaniesRepository';
-// import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const companyRouter = Router();
 const companiesRepository = new CompaniesRepository();
 
-// companyRouter.use(ensureAuthenticated);
+companyRouter.use(ensureAuthenticated);
 
 companyRouter.get('/', async (request, response) => {
   const companies = await companiesRepository.findAll();
@@ -22,7 +22,7 @@ companyRouter.get('/:id', async (request, response) => {
 });
 
 companyRouter.post('/', async (request, response) => {
-  const { cnpj, name, address, city, state, contact } = request.body;
+  const { cnpj, name, address, city, state, contact, status } = request.body;
 
   const company = await companiesRepository.add({
     name,
@@ -31,6 +31,7 @@ companyRouter.post('/', async (request, response) => {
     city,
     state,
     contact,
+    status
   });
 
   return response.status(201).json(company);
@@ -48,6 +49,7 @@ companyRouter.put('/:id', async (request, response) => {
     city,
     state,
     contact,
+    status
   });
 
   return response.json(company);
