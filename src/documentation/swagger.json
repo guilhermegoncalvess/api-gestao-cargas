@@ -1,0 +1,23 @@
+{
+  "definition": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API de Gestão de Cargas Agrícolas",
+      "description": "API para consumo interno de uma aplicação para Gestão de Cargas Agrícolas.",
+      "contact": {
+        "name": "Guilherme Gonçalves",
+        "email": "guilhermegoncalvessantos@outlook.com.br"
+      },
+      "version": "1.0.0",
+      "servers": [
+        {
+          "url": "http://localhost:3333/",
+          "description": "API Development"
+        }
+      ]
+    }
+  },
+  "apis": ["src/routes/*.ts"]
+}
+
+
