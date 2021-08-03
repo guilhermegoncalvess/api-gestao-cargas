@@ -19,7 +19,7 @@ class usersRepository extends Repository<User> {
     const usersRepository = getRepository(User);
 
     const users = await usersRepository.find({
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email', 'password', 'role_id'],
     });
 
     if (!users) {
@@ -42,6 +42,17 @@ class usersRepository extends Repository<User> {
     }
 
     return user;
+  }
+
+  public async findByCompanyId(company_id: string): Promise<User[]> {
+    const usersRepository = getRepository(User);
+
+    const users = await usersRepository.find({
+      select: ['id', 'email'],
+      where: { company_id },
+    });
+
+    return users;
   }
 
   public async findByRole(id: string | undefined): Promise<User[]> {
