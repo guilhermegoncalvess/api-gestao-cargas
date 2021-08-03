@@ -35,36 +35,37 @@ class CreateRoleService {
                               "employees":
                                       {
                                           "read": true,
-                                          "create": false,
+                                          "create": true,
+                                          "update": true,
                                           "delete": false
                                       },
                               "roles":
                                       {
-                                            "create": true,
-                                            "read": true,
-                                            "update": true,
-                                            "delete": true
+                                          "create": true,
+                                          "read": true,
+                                          "update": true,
+                                          "delete": true
                                       },
                               "services":
                                       {
                                           "create": true,
-                                            "read": true,
-                                            "update": true,
-                                            "delete": true
+                                          "read": true,
+                                          "update": true,
+                                          "delete": true
                                       },
                               "load":
                                       {
                                           "create": true,
-                                            "read": true,
-                                            "update": true,
-                                            "delete": true
+                                          "read": true,
+                                          "update": true,
+                                          "delete": true
                                       },
                               "farm":
                                       {
                                           "create": true,
-                                            "read": true,
-                                            "update": true,
-                                            "delete": true
+                                          "read": true,
+                                          "update": true,
+                                          "delete": true
                                       }
                             }
     }
