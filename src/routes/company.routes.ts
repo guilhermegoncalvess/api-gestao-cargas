@@ -39,7 +39,7 @@ companyRouter.post('/', async (request, response) => {
 
 companyRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { cnpj, name, address, city, state, contact } = request.body;
+  const { cnpj, name, address, city, state, contact, status } = request.body;
 
   const company = await companiesRepository.alter({
     id,
