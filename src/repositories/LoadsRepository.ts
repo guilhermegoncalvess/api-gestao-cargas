@@ -17,7 +17,7 @@ interface CreateLoadDTO {
   cost?: number;
   type: string;
   description?: string;
-  status: string;
+  status: 'open' | 'execution' | 'concluded';
   start_date: string;
   finished_date?: string;
 }
