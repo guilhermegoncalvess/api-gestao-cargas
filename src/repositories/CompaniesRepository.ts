@@ -16,7 +16,7 @@ interface CreateCompanyDTO {
   city?: string;
   state?: string;
   contact: string;
-  status: string;
+  status: 'pending' | 'accepted';
 }
 
 @EntityRepository(Company)
