@@ -1,3 +1,4 @@
+import { IsDate, IsJSON, IsUUID, MinLength, minLength } from 'class-validator';
 import {
   Entity,
   Column,
@@ -17,18 +18,23 @@ class Role {
   id: string;
 
   @PrimaryColumn()
+  @IsUUID("4")
   company_id: string;
 
   @Column()
+  @MinLength(1)
   name: string;
 
   @Column({ type: 'jsonb'})
+  @IsJSON()
   permission: any;
 
   @CreateDateColumn()
+  @IsDate()
   created_at: Date;
 
   @UpdateDateColumn()
+  @IsDate()
   updated_at: Date;
 
   @ManyToOne(() => Company, company => company.users)

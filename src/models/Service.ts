@@ -1,9 +1,11 @@
+import { IsDate, IsUUID } from 'class-validator';
 import { Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
@@ -13,22 +15,31 @@ import Load from './Load';
 
 @Entity('service')
 class Service {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @PrimaryColumn('uuid')
+  @IsUUID("4")
   employee_id: string;
 
   @PrimaryColumn('uuid')
+  @IsUUID("4")
   farm_id: string;
 
   @PrimaryColumn('uuid')
+  @IsUUID("4")
   load_id: string;
 
   @Column()
+  @IsDate()
   date: Date;
 
   @CreateDateColumn()
+  @IsDate()
   created_at: Date;
 
   @UpdateDateColumn()
+  @IsDate()
   updated_at: Date;
 
   @ManyToOne(() => Employee, employee => employee.services )
