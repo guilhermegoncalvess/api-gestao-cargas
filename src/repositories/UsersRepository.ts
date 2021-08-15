@@ -1,12 +1,16 @@
+import { hash } from 'bcryptjs';
 import { EntityRepository, getRepository, Repository } from 'typeorm';
 import AppError from '../errors/AppError';
+import Company from '../models/Company';
 
 import User from '../models/User';
 
 interface CreateuserDTO {
   id?: string;
+  company_id?: string;
   email: string;
   password: string;
+  role: string;
 }
 
 @EntityRepository(User)
@@ -15,7 +19,7 @@ class usersRepository extends Repository<User> {
     const usersRepository = getRepository(User);
 
     const users = await usersRepository.find({
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email', 'password', 'role_id'],
     });
 
     if (!users) {
@@ -40,6 +44,17 @@ class usersRepository extends Repository<User> {
     return user;
   }
 
+  public async findByCompanyId(company_id: string): Promise<User[]> {
+    const usersRepository = getRepository(User);
+
+    const users = await usersRepository.find({
+      select: ['id', 'email'],
+      where: { company_id },
+    });
+
+    return users;
+  }
+
   public async findByRole(id: string | undefined): Promise<User[]> {
     const usersRepository = getRepository(User);
 
@@ -55,36 +70,26 @@ class usersRepository extends Repository<User> {
     return user;
   }
 
-  public async add({
-    email,
-    password,
-  }: CreateuserDTO): Promise<User> {
-    const usersRepository = getRepository(User);
-
-    const user = usersRepository.create({
-      password,
-      email,
-    });
-
-    await usersRepository.save(user);
-
-    return user;
-  }
-
   public async alter({
     id,
+    company_id,
     email,
     password,
+    role,
   }: CreateuserDTO): Promise<User> {
     const usersRepository = getRepository(User);
-    const user = await usersRepository.findOne(id);
+
+    const user = await usersRepository.findOne({ id });
 
     if (!user) {
       throw new AppError('user does not exist.', 404);
     }
 
+    const hashedPassword = await hash(password, 8);
+
     if (email) user.email = email;
-    if (password) user.password = password;
+    if (password) user.password = hashedPassword;
+    // if (role) user.role = role;
 
     await usersRepository.save(user);
 

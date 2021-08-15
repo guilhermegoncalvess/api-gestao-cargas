@@ -7,16 +7,16 @@ import {
 import AppError from '../errors/AppError';
 
 import Company from '../models/Company';
-import PersonsRepository from './PersonsRepository';
 
 interface CreateCompanyDTO {
   id?: string;
+  cnpj: string;
   name: string;
   address: string;
   city?: string;
   state?: string;
   contact: string;
-  owner_id: string;
+  status: 'pending' | 'accepted';
 }
 
 @EntityRepository(Company)
@@ -25,8 +25,7 @@ class CompaniesRepository extends Repository<Company> {
     const companiesRepository = getRepository(Company);
 
     const companies = await companiesRepository.find({
-      select: ['id', 'name', 'address', 'contact'],
-      relations: ['owner'],
+      select: ['id', 'cnpj', 'name', 'address', 'contact'],
     });
 
     if (!companies) {
@@ -40,8 +39,7 @@ class CompaniesRepository extends Repository<Company> {
     const companiesRepository = getRepository(Company);
 
     const company = await companiesRepository.find({
-      select: ['name', 'address', 'contact'],
-      relations: ['owner'],
+      select: ['name', 'cnpj', 'address', 'contact'],
       where: { id },
     });
 
@@ -52,54 +50,46 @@ class CompaniesRepository extends Repository<Company> {
     return company;
   }
 
+
+  //corrigir esse método
+
   public async add({
     name,
+    cnpj,
     address,
     city,
     state,
     contact,
-    owner_id,
+    status
   }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getCustomRepository(CompaniesRepository);
-    const personRepository = getCustomRepository(PersonsRepository);
 
-    const checkOwnerExists = await personRepository.findOne({
-      where: { id: owner_id },
+    const company = companiesRepository.create({
+      name,
+      cnpj,
+      address,
+      city,
+      state,
+      contact,
+      status
     });
 
-    if (!checkOwnerExists) {
-      throw new AppError('This owner is not registered.', 404);
-    }
-    else {
-      if( checkOwnerExists.role == 'Propietario'){
+    await companiesRepository.save(company);
 
-        const company = companiesRepository.create({
-          name,
-          address,
-          city,
-          state,
-          contact,
-          owner_id,
-        });
-
-        await companiesRepository.save(company);
-
-        return company;
-      }
-      else {
-        throw new AppError('This person not is owner.', 404 );
-      }
-    }
+    return company;
   }
+
+
 
   public async alter({
     id,
+    cnpj,
     name,
     address,
     city,
     state,
     contact,
-    owner_id,
+    status
   }: CreateCompanyDTO): Promise<Company> {
     const companiesRepository = getRepository(Company);
     const company = await companiesRepository.findOne(id);
@@ -109,11 +99,12 @@ class CompaniesRepository extends Repository<Company> {
     }
 
     if (name) company.name = name;
+    if (cnpj) company.cnpj = cnpj;
     if (address) company.address = address;
     if (city) company.city = city;
     if (state) company.state = state;
     if (contact) company.contact = contact;
-    if (owner_id) company.owner_id = owner_id;
+    if (status) company.status = status;
 
     await companiesRepository.save(company);
 

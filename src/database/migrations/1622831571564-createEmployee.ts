@@ -1,22 +1,22 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  QueryRunnerAlreadyReleasedError,
-  Table,
-} from 'typeorm';
+import {MigrationInterface, QueryRunner, Table, TableForeignKey} from "typeorm";
 
-export default class createPersons1613077006910 implements MigrationInterface {
+export class createEmployee1622831571564 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'person',
+        name: 'employee',
         columns: [
           {
             name: 'id',
-            type: 'varchar',
+            type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()'
+          },
+          {
+            name: 'company_id',
+            type: 'uuid',
+            isNullable: true,
           },
           {
             name: 'name',
@@ -49,7 +49,7 @@ export default class createPersons1613077006910 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'role',
+            name: 'responsibility',
             type: 'varchar',
             isNullable: false,
           },
@@ -66,9 +66,20 @@ export default class createPersons1613077006910 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.createForeignKey('employee', new TableForeignKey({
+      name: 'EmployeeCompany',
+      columnNames: ['company_id'],
+      referencedColumnNames: ['id'],
+      referencedTableName: 'company',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    }));
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('person');
+    await queryRunner.dropForeignKey( 'employee','EmployeeCompany');
+
+    await queryRunner.dropTable('employee');
   }
 }

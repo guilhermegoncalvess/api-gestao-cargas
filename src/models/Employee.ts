@@ -1,19 +1,26 @@
-import { IsDate, isString, IsString, Length } from 'class-validator';
-import {
-  Entity,
+import { IsDate, IsString, IsUUID, Length } from 'class-validator';
+import { Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
+  PrimaryColumn,
+  JoinColumn,
+  OneToOne
 } from 'typeorm';
 
+import Company from './Company';
 import Service from './Service';
 
-@Entity('farm')
-class Farm {
+@Entity('employee')
+class Employee {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @PrimaryColumn()
+  @IsUUID("4")
+  company_id: string;
 
   @Column()
   @IsString()
@@ -23,7 +30,7 @@ class Farm {
   @Column()
   @IsString()
   @Length(1, 30)
-  owner: string;
+  nickname: string;
 
   @Column()
   @IsString()
@@ -44,6 +51,11 @@ class Farm {
   @IsString()
   contact: string;
 
+  @Column()
+  @IsString()
+  @Length(1, 30)
+  responsibility: string;
+
   @CreateDateColumn()
   @IsDate()
   created_at: Date;
@@ -52,8 +64,13 @@ class Farm {
   @IsDate()
   updated_at: Date;
 
-  @OneToMany(() => Service, service => service.farm)
+  @ManyToOne(() => Company, () => Employee)
+  @JoinColumn( {name: 'company_id' })
+  company: Company;
+
+  @OneToOne( () => Service, service => service.employees )
   services: Service[];
+
 }
 
-export default Farm;
+export default Employee;

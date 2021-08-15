@@ -1,12 +1,20 @@
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
+
 import routes from './routes';
 
+import swaggerOptions from './documentation/swagger.json';
 import './database';
 import AppError from './errors/AppError';
 
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
 const app = express();
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(express.json());
 app.use(routes);

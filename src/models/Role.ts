@@ -1,19 +1,19 @@
-import { Entity,
+import { IsDate, IsJSON, IsUUID, MinLength, minLength } from 'class-validator';
+import {
+  Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  PrimaryColumn,
+  PrimaryColumn
 } from 'typeorm';
-
-import { IsDate, IsEmail, IsUUID, MinLength } from 'class-validator';
 
 import Company from './Company';
 
-@Entity('user')
-class User {
+@Entity('role')
+class Role {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,16 +22,12 @@ class User {
   company_id: string;
 
   @Column()
-  @IsEmail()
-  email: string;
+  @MinLength(1)
+  name: string;
 
-  @Column()
-  @MinLength(8)
-  password: string;
-
-  @Column()
-  @IsUUID("4")
-  role_id: string;
+  @Column({ type: 'jsonb'})
+  @IsJSON()
+  permission: any;
 
   @CreateDateColumn()
   @IsDate()
@@ -44,7 +40,6 @@ class User {
   @ManyToOne(() => Company, company => company.users)
   @JoinColumn({ name: 'company_id'})
   company: Company;
-
 }
 
-export default User;
+export default Role;

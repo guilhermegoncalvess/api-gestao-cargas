@@ -22,15 +22,16 @@ companyRouter.get('/:id', async (request, response) => {
 });
 
 companyRouter.post('/', async (request, response) => {
-  const { name, address, city, state, contact, owner_id } = request.body;
+  const { cnpj, name, address, city, state, contact, status } = request.body;
 
   const company = await companiesRepository.add({
     name,
+    cnpj,
     address,
     city,
     state,
     contact,
-    owner_id,
+    status
   });
 
   return response.status(201).json(company);
@@ -38,16 +39,17 @@ companyRouter.post('/', async (request, response) => {
 
 companyRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  const { name, address, city, state, contact, owner_id } = request.body;
+  const { cnpj, name, address, city, state, contact, status } = request.body;
 
   const company = await companiesRepository.alter({
     id,
     name,
+    cnpj,
     address,
     city,
     state,
     contact,
-    owner_id,
+    status
   });
 
   return response.json(company);

@@ -12,12 +12,14 @@ import CompaniesRepository from './CompaniesRepository';
 import FarmsRepository from './FarmsRepository';
 
 interface CreateLoadDTO {
-  date: string;
   company_id: string;
-  farm_id: string;
   weight?: number;
   cost?: number;
-  type: 'truck' | 'bitruck' | 'carretinha';
+  type: string;
+  description?: string;
+  status: 'open' | 'execution' | 'concluded';
+  start_date: string;
+  finished_date?: string;
 }
 
 @EntityRepository(Load)
@@ -26,7 +28,8 @@ class LoadsRepository extends Repository<Load> {
     const loadsRepository = getRepository(Load);
 
     const loads = await loadsRepository.find({
-      select: ['id', 'company_id', 'farm_id', 'date', 'weight', 'cost'],
+      select: ['id', 'weight', 'cost', 'status', 'start_date', 'finished_date'],
+      // relations: ['company'],
     });
 
     if (!loads) {
@@ -37,36 +40,37 @@ class LoadsRepository extends Repository<Load> {
   }
 
   public async add({
-    date,
     company_id,
-    farm_id,
     weight,
     cost,
     type,
+    description,
+    status,
+    start_date,
+    finished_date,
+
   }: CreateLoadDTO): Promise<Load> {
     const loadsRepository = getCustomRepository(LoadsRepository);
     const farmsRepository = getCustomRepository(FarmsRepository);
     const companiesRepository = getCustomRepository(CompaniesRepository);
 
-    const checkFarmExists = await farmsRepository.findOne({
-      where: { id: farm_id },
-    });
-
     const checkCompanyExists = await companiesRepository.findOne({
-      where: { id: farm_id },
+      where: { id: company_id },
     });
 
-    if (!checkFarmExists && !checkCompanyExists) {
+    if (!checkCompanyExists) {
       throw new AppError('This owner is not registered.', 404);
     }
 
     const load = loadsRepository.create({
-      date,
       company_id,
-      farm_id,
       weight,
       cost,
       type,
+      description,
+      status,
+      start_date,
+      finished_date
     });
 
     await loadsRepository.save(load);

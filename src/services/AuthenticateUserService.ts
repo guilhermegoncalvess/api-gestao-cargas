@@ -16,6 +16,7 @@ interface Response {
   user: User;
   token: string;
 }
+
 class AuthenticateUserService {
   public async execute({ email, password }: Request): Promise<Response>{
     const usersRepository = getRepository(User);
@@ -36,7 +37,10 @@ class AuthenticateUserService {
 
     const { secret, expiresIn } = authConfig.jwt;
 
-    const token = sign({}, secret, {
+    const token = sign({
+      company_id: user.company_id,
+      user_id: user.id,
+    }, secret, {
       subject: user.id,
       expiresIn,
     });

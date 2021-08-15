@@ -1,43 +1,68 @@
+import { Contains, IsDate, IsIn, IsNumber, IsString, IsUUID, MinLength } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
+
 import Company from './Company';
-import Farm from './Farm';
 
 @Entity('load')
 class Load {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  date: string;
-
-  @Column()
+  @PrimaryColumn()
+  @IsUUID("4")
   company_id: string;
 
-  @ManyToOne(() => Farm)
-  @JoinColumn({ name: 'company_id' })
-  company: Company;
-
   @Column()
-  farm_id: string;
-
-  @ManyToOne(() => Farm)
-  @JoinColumn({ name: 'farm_id' })
-  farm: Farm;
-
-  @Column()
+  @IsNumber()
   weight: number;
 
   @Column()
+  @IsNumber()
   cost: number;
 
   @Column()
-  type: 'truck' | 'bitruck' | 'carretinha';
+  @IsString()
+  type: string;
+
+  @Column()
+  @IsString()
+  @MinLength(10)
+  description: string;
+
+  @Column()
+  @IsString()
+  @IsIn(["open", "execution", "concluded"])
+  status: string;
+
+  @Column()
+  @IsDate()
+  start_date: Date;
+
+  @Column()
+  @IsDate()
+  finished_date: Date;
+
+  @CreateDateColumn()
+  @IsDate()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  @IsDate()
+  updated_at: Date;
+
+  @ManyToOne(() => Company, () => Load )
+  @JoinColumn({ name: 'company_id'})
+  company: Company;
+
 }
 
 export default Load;

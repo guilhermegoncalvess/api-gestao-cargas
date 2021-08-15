@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import {MigrationInterface, QueryRunner, Table, TableColumn, TableForeignKey} from "typeorm";
 
 export class CreateCompanies1621452608551 implements MigrationInterface {
 
@@ -9,18 +9,18 @@ export class CreateCompanies1621452608551 implements MigrationInterface {
             columns: [
               {
                 name: 'id',
-                type: 'varchar',
+                type: 'uuid',
                 isPrimary: true,
                 generationStrategy: 'uuid',
                 default: 'uuid_generate_v4()'
               },
               {
-                name: 'owner_id',
+                name: 'name',
                 type: 'varchar',
                 isNullable: false,
               },
               {
-                name: 'name',
+                name: 'cnpj',
                 type: 'varchar',
                 isNullable: false,
               },
@@ -45,6 +45,11 @@ export class CreateCompanies1621452608551 implements MigrationInterface {
                 isNullable: false,
               },
               {
+                name: 'status',
+                type: 'varchar',
+                isNullable: false,
+              },
+              {
                 name: 'created_at',
                 type: 'timestamp',
                 default: 'now()',
@@ -60,7 +65,10 @@ export class CreateCompanies1621452608551 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('company');
+      await queryRunner.dropForeignKey( 'company','CompanyOwner');
+
+      await queryRunner.dropTable('company');
+
     }
 
 }
